@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דקדוקים באוטומטים</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .theorem-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid #e91e63;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .theorem-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .theorem-title {
+            font-size: 1.8em;
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .section {
+            background: white;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        .section-content {
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 15px 0;
+            direction: ltr;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #00bcd4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: inherit;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .home-button {
+                top: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">🏠 דף הבית</a>
+    <div class="container">
+        <div class="header">
+            <h1>📝 דקדוקים פורמליים באוטומטים</h1>
+            <p>מבוא לדקדוקים, גזירה ועצי גזירה</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="theorem-box">
+                <div class="theorem-title">⚡ מהו דקדוק פורמלי?</div>
+                <p>דקדוק פורמלי הוא מערכת כללים מתמטית המגדירה את המבנה והתחביר של שפה פורמלית. הדקדוק מתאר כיצד לייצר מחרוזות חוקיות בשפה באמצעות החלפות סדרתיות של סימנים לא-טרמינליים לפי כללי הפקה מוגדרים, החל מסימן התחלתי ועד להגעה למחרוזת המורכבת אך ורק מסימנים טרמינליים.</p>
+                    <h4 style="color: #00695c; margin-bottom: 10px;">🔧 כלי לתרגול דקדוקים</h4>
+                    <p>לתרגול מעשי של דקדוקים חופשי-הקשר, בדיקת גזירות ובניית עצי גזירה:</p>
+                    <a href="https://web.stanford.edu/class/archive/cs/cs103/cs103.1156/tools/cfg/?utm_source=chatgpt.com" 
+                       target="_blank" 
+                       style="display: inline-block; background: #00bcd4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 10px; transition: background 0.3s ease;">
+                        📖 כלי Stanford לדקדוקים
+                    </a>
+                </div>
+            </div>
+
+          
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔍 הגדרה פורמלית של דקדוק</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p>דקדוק פורמלי G מוגדר כ־4-טאפליה:</p>
+                    <div class="formula">G = (V, Σ, R, S)</div>
+                    <ul>
+                        <li><strong>V</strong>: קבוצה סופית של <em>סמלים לא-טרמינליים</em>.</li>
+                        <li><strong>Σ</strong>: קבוצה סופית של <em>סמלים טרמינליים</em>, כך ש־V ו־Σ בלתי חופפים.</li>
+                        <li><strong>R</strong>: קבוצה סופית של <em>כללי הפקה</em> (Productions) מהצורה α → β, כאשר α ∈ (V ∪ Σ)* V (V ∪ Σ)*, ו־β ∈ (V ∪ Σ)*.</li>
+                        <li><strong>S</strong> ∈ V: הסמל ההתחלתי.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>⚙️ הגדרה פורמלית של גזירה</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p>גזירה (Derivation) היא יישום סדרתי של כללי ההפקה כדי לעבור מהמחליף ההתחלתי S למחרוזת של סמלים טרמינליים.</p>
+                    <p>נאמר ש־α ⇒ β אם ניתן להחליף תת-מחרוזת ב־α לפי כלל הפקה אחד לקבלת β. גזירה שלמה נכתבת S ⇒* w, כאשר w ∈ Σ*.</p>
+                    <div class="formula">S ⇒* w, כאשר w ∈ Σ*</div>
+                    <p>עץ גזירה מציג את התהליך בצורה עץית: כל צומת פנימי מסמן החלפת סמל לא-טרמינלי לפי כלל, ועלים הם סמלים טרמינליים בסדר שנוצר המחרוזת.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🎲 דוגמאות פשוטות</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="example-box">
+                        <strong>דוגמה 1: דקדוק רגולרי (Regular Grammar)</strong>
+                        <p>דקדוק G₁ לשפה של מילים המתחילות ב‑a ומסתיימות ב‑b:</p>
+                        <div class="formula">G₁ = ({S, A}, {a, b}, {S → aA, A → b, A → aA}, S)</div>
+                        <p><strong>גזירה:</strong> S ⇒ aA ⇒ aaA ⇒ aab</p>
+                        <p><strong>עץ גזירה ל-aab:</strong></p>
+                        <svg viewBox="0 0 200 120" style="width: 200px; height: 120px; margin: 10px auto; display: block;">
+                            <text x="100" y="15" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <line x1="100" y1="20" x2="70" y2="40" stroke="black" stroke-width="1"/>
+                            <line x1="100" y1="20" x2="130" y2="40" stroke="black" stroke-width="1"/>
+                            <text x="70" y="50" text-anchor="middle" font-size="12">a</text>
+                            <text x="130" y="50" text-anchor="middle" font-size="12" font-weight="bold">A</text>
+                            <line x1="130" y1="55" x2="110" y2="75" stroke="black" stroke-width="1"/>
+                            <line x1="130" y1="55" x2="150" y2="75" stroke="black" stroke-width="1"/>
+                            <text x="110" y="85" text-anchor="middle" font-size="12">a</text>
+                            <text x="150" y="85" text-anchor="middle" font-size="12" font-weight="bold">A</text>
+                            <line x1="150" y1="90" x2="150" y2="105" stroke="black" stroke-width="1"/>
+                            <text x="150" y="115" text-anchor="middle" font-size="12">b</text>
+                        </svg>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>דוגמה 2: דקדוק חופשי הקשר - a^n b^n</strong>
+                        <p>דקדוק G₂ לשפה {aⁿbⁿ | n ≥ 0}:</p>
+                        <div class="formula">G₂ = ({S}, {a, b}, {S → aSb, S → ε}, S)</div>
+                        <p><strong>גזירה לדוגמה:</strong> S ⇒ aSb ⇒ aaSbb ⇒ aaεbb ⇒ aabb </p>
+                        <p><strong>עץ גזירה ל-aabb:</strong></p>
+                        <svg viewBox="0 0 200 120" style="width: 200px; height: 120px; margin: 10px auto; display: block;">
+                            <text x="100" y="15" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <line x1="100" y1="20" x2="60" y2="40" stroke="black" stroke-width="1"/>
+                            <line x1="100" y1="20" x2="100" y2="40" stroke="black" stroke-width="1"/>
+                            <line x1="100" y1="20" x2="140" y2="40" stroke="black" stroke-width="1"/>
+                            <text x="60" y="50" text-anchor="middle" font-size="12">a</text>
+                            <text x="100" y="50" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <text x="140" y="50" text-anchor="middle" font-size="12">b</text>
+                            <line x1="100" y1="55" x2="80" y2="75" stroke="black" stroke-width="1"/>
+                            <line x1="100" y1="55" x2="100" y2="75" stroke="black" stroke-width="1"/>
+                            <line x1="100" y1="55" x2="120" y2="75" stroke="black" stroke-width="1"/>
+                            <text x="80" y="85" text-anchor="middle" font-size="12">a</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <text x="120" y="85" text-anchor="middle" font-size="12">b</text>
+                            <line x1="100" y1="90" x2="100" y2="105" stroke="black" stroke-width="1"/>
+                            <text x="100" y="115" text-anchor="middle" font-size="10">ε</text>
+                        </svg>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>דוגמה 3: דקדוק חופשי הקשר - פלינדרומים</strong>
+                        <p>דקדוק G₃ לשפה של פלינדרומים מעל {a,b}:</p>
+                        <div class="formula">G₃ = ({S}, {a, b}, {S → aSa, S → bSb, S → a, S → b, S → ε}, S)</div>
+                        <p><strong>גזירה לדוגמה:</strong> S ⇒ aSa ⇒ abSba ⇒ abaaba</p>
+                        <p><strong>עץ גזירה ל-ababa:</strong></p>
+                        <svg viewBox="0 0 220 100" style="width: 220px; height: 140px; margin: 10px auto; display: block;">
+                            <text x="110" y="15" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <line x1="110" y1="20" x2="70" y2="40" stroke="black" stroke-width="1"/>
+                            <line x1="110" y1="20" x2="110" y2="40" stroke="black" stroke-width="1"/>
+                            <line x1="110" y1="20" x2="150" y2="40" stroke="black" stroke-width="1"/>
+                            <text x="70" y="50" text-anchor="middle" font-size="12">a</text>
+                            <text x="110" y="50" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <text x="150" y="50" text-anchor="middle" font-size="12">a</text>
+                            <line x1="110" y1="55" x2="80" y2="75" stroke="black" stroke-width="1"/>
+                            <line x1="110" y1="55" x2="110" y2="75" stroke="black" stroke-width="1"/>
+                            <line x1="110" y1="55" x2="140" y2="75" stroke="black" stroke-width="1"/>
+                            <text x="80" y="85" text-anchor="middle" font-size="12">b</text>
+                            <text x="110" y="85" text-anchor="middle" font-size="12" font-weight="bold">S</text>
+                            <text x="140" y="85" text-anchor="middle" font-size="12">b</text>
+                            <line x1="110" y1="90" x2="110" y2="105" stroke="black" stroke-width="1"/>
+                            <text x="110" y="115" text-anchor="middle" font-size="10">a</text>
+                        </svg>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>דוגמה 4: דקדוק תלוי הקשר</strong>
+                        <p>דקדוק G₄ לשפה {aⁿbⁿcⁿ | n ≥ 1} (דקדוק תלוי הקשר):</p>
+                        <div class="formula">G₄ = ({S, B, C}, {a, b, c}, {S → aSBC, S → aBC, CB → BC, bB → bb, bC → bc, cC → cc}, S)</div>
+                        <p><strong>גזירה לדוגמה:</strong> S ⇒ aBC ⇒ abC ⇒ abc</p>
+                        <p>זהו דקדוק מסוג Type-1 (תלוי הקשר) מכיוון שיש כללים כמו CB → BC שבהם האגף השמאלי מכיל יותר מסמל אחד.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📚 היררכיית חומסקי</span>
+                    <span class="arrow">▼</span>
+                </div>
+
+                <div class="section-content">
+                    <p>היררכיית חומסקי מחלקת דקדוקים לפי מגבלות בכללי ההפקה:</p>
+                    <div style="display: flex; align-items: flex-start; justify-content: center; gap: 40px; margin: 30px 0; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 300px; display: flex; justify-content: center;">
+                            <svg viewBox="0 0 400 400" style="width: 400px; height: 400px; max-width: 100%;">
+                                <!-- Type-0 (כללי) - החיצוני -->
+                                <circle cx="200" cy="200" r="180" fill="#ff6b6b" fill-opacity="0.2" stroke="#ff6b6b" stroke-width="3"/>
+                                <text x="200" y="50" text-anchor="middle" font-size="18" font-weight="bold" fill="#ff6b6b">Type-0 (כללי)</text>
+                                
+                                <!-- Type-1 (תלוי-הקשר) -->
+                                <circle cx="200" cy="200" r="140" fill="#4ecdc4" fill-opacity="0.2" stroke="#4ecdc4" stroke-width="3"/>
+                                <text x="200" y="90" text-anchor="middle" font-size="14" font-weight="bold" fill="#4ecdc4">Type-1 (תלוי-הקשר)</text>
+                                
+                                <!-- Type-2 (חופשי-הקשר) -->
+                                <circle cx="200" cy="200" r="100" fill="#45b7d1" fill-opacity="0.2" stroke="#45b7d1" stroke-width="3"/>
+                                <text x="200" y="135" text-anchor="middle" font-size="12" font-weight="bold" fill="#45b7d1">Type-2 (חופשי-הקשר)</text>
+                                
+                                <!-- Type-3 (רגולרי) - הפנימי -->
+                                <circle cx="200" cy="200" r="60" fill="#f7dc6f" fill-opacity="0.3" stroke="#f39c12" stroke-width="3"/>
+                                <text x="200" y="195" text-anchor="middle" font-size="12" font-weight="bold" fill="#f39c12">Type-3</text>
+                                <text x="200" y="210" text-anchor="middle" font-size="12" font-weight="bold" fill="#f39c12">(רגולרי)</text>
+                            </svg>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 300px;">
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin: 20px 0; padding: 15px; background: #ff6b6b; background-opacity: 0.1; border-right: 4px solid #ff6b6b; border-radius: 8px;">
+                                    <strong>Type-0 (כללי):</strong> אין מגבלות על כללי ההפקה (R ⊆ (V∪Σ)* → (V∪Σ)*). תואם למכונת טיורינג.
+                                </li>
+                                <li style="margin: 20px 0; padding: 15px; background: #4ecdc4; background-opacity: 0.1; border-right: 4px solid #4ecdc4; border-radius: 8px;">
+                                    <strong>Type-1 (תלוי-הקשר):</strong> כללי הפקה αAβ → αγβ, כאשר A ∈ V, α,β ∈ (V∪Σ)*, ו־γ ∈ (V∪Σ)+. השפה צריכה להכיל לפחות מחרוזת אחת ארוכה מ‑ |αβ|.
+                                </li>
+                                <li style="margin: 20px 0; padding: 15px; background: #45b7d1; background-opacity: 0.1; border-right: 4px solid #45b7d1; border-radius: 8px;">
+                                    <strong>Type-2 (חופשי-הקשר):</strong> כללי הפקה A → γ, כאשר A ∈ V, γ ∈ (V∪Σ)*.
+                                </li>
+                                <li style="margin: 20px 0; padding: 15px; background: #f7dc6f; background-opacity: 0.1; border-right: 4px solid #f39c12; border-radius: 8px;">
+                                    <strong>Type-3 (רגולרי):</strong> כללי הפקה A → aB או A → a (ימני-ליניארי או שמאלי-ליניארי אבל לא ביחד). מתאימים לאוטומטים סופיים.
+                                </li>
+                            </ul>
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #007bff;">
+                        <strong>📊 יחסי ההכלה:</strong> Type-3 ⊆ Type-2 ⊆ Type-1 ⊆ Type-0
+                        <br>כל שפה רגולרית היא גם חופשית-הקשר, כל שפה חופשית-הקשר היא גם תלוית-הקשר, וכל שפה תלוית-הקשר היא גם כללית.
+                    </div>
+                        
+                </div>
+                    
+            </div>
+        </div>
+        </div>
+
+    
+        
+        
+            
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🛠️ סוגי דקדוקים</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <h3>🔧 סוגי דקדוקים מפורטים</h3>
+                    <div style="display: grid; gap: 20px; margin: 20px 0;">
+                        
+                        <div style="background: linear-gradient(135deg, #f7dc6f 0%, #f4d03f 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #f39c12;">
+                            <h4 style="color: #d68910; margin-bottom: 15px;">📏 דקדוקים רגולריים (Type-3)</h4>
+                            <p><strong>מגבלות:</strong> כללי הפקה מהצורה A → aB או A → a (ימני-ליניארי) או B → Ba או A → a (שמאלי-ליניארי)</p>
+                            <p><strong>דוגמה:</strong> S → aS | bS | a | b</p>
+                            <p><strong>יכולת חישובית:</strong> מתאימים לאוטומטים סופיים (DFA/NFA)</p>
+                            <p><strong>שפות טיפוסיות:</strong> שפות רגולריות, biehexpressions</p>
+                            <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                <strong>מגבלה עיקרית:</strong> לא יכולים לזכור מידע לא מוגבל - אין זיכרון stack
+                            </div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #85c1e9 0%, #5dade2 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #3498db;">
+                            <h4 style="color: #2874a6; margin-bottom: 15px;">🔀 דקדוקים חופשי-הקשר (Type-2)</h4>
+                            <p><strong>מגבלות:</strong> כללי הפקה מהצורה A → γ, כאשר A סמל לא-טרמינלי בודד</p>
+                            <p><strong>דוגמה:</strong> S → aSb | ab (לשפה a^n b^n)</p>
+                            <p><strong>יכולת חישובית:</strong> מתאימים ל-Pushdown Automata (PDA)</p>
+                            <p><strong>שפות טיפוסיות:</strong> שפות תכנות, ביטויים אריתמטיים מאוזנים</p>
+                            <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                <strong>מגבלה עיקרית:</strong> לא יכולים לזכור התאמות מרובות (כמו a^n b^n c^n)
+                            </div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #82e5d2 0%, #4ecdc4 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #17a2b8;">
+                            <h4 style="color: #138496; margin-bottom: 15px;">🎯 דקדוקים תלוי-הקשר (Type-1)</h4>
+                            <p><strong>מגבלות:</strong> כללי הפקה מהצורה αAβ → αγβ, כאשר |αγβ| ≥ |αAβ| (לא מקצר)</p>
+                            <p><strong>דוגמה:</strong> S → aSBC | aBC, CB → BC, aB → ab, bC → bc</p>
+                            <p><strong>יכולת חישובית:</strong> מתאימים למכונת טיורינג עם זיכרון ליניארי</p>
+                            <p><strong>שפות טיפוסיות:</strong> {a^n b^n c^n | n≥1}, שפות עם תלות מורכבת</p>
+                            <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                <strong>מגבלה עיקרית:</strong> ההחלפה חייבת להתבצע בהקשר מסוים - לא יכול לקצר
+                            </div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #f1948a 0%, #e74c3c 100%); padding: 20px; border-radius: 12px; border-left: 5px solid #c0392b;">
+                            <h4 style="color: #922b21; margin-bottom: 15px;">🌐 דקדוקים כלליים (Type-0)</h4>
+                            <p><strong>מגבלות:</strong> אין הגבלות על כללי ההפקה - α → β כאשר α,β ∈ (V∪Σ)*</p>
+                            <p><strong>דוגמה:</strong> AB → BA, A → ε (יכול לכלול קיצור ושינוי סדר)</p>
+                            <p><strong>יכולת חישובית:</strong> שקול למכונת טיורינג כללית</p>
+                            <p><strong>שפות טיפוסיות:</strong> כל שפה חישובית רקורסיבית</p>
+                            <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                <strong>מגבלה עיקרית:</strong> עלול להיות לא כריע (undecidable) - בעיית העצירה
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border: 2px solid #28a745; margin-top: 25px;">
+                        <h4 style="color: #155724; margin-bottom: 15px;">🔄 השוואה מהירה - יכולות ומגבלות</h4>
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
+                            <thead style="background: #28a745; color: white;">
+                                <tr>
+                                    <th style="padding: 12px; text-align: right;">סוג דקדוק</th>
+                                    <th style="padding: 12px; text-align: right;">זיכרון נדרש</th>
+                                    <th style="padding: 12px; text-align: right;">דוגמה לשפה</th>
+                                    <th style="padding: 12px; text-align: right;">כריעות</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: #f8f9fa;">
+                                    <td style="padding: 12px; font-weight: bold;">Type-3 (רגולרי)</td>
+                                    <td style="padding: 12px;">קבוע (סופי)</td>
+                                    <td style="padding: 12px;">(a|b)*</td>
+                                    <td style="padding: 12px; color: #28a745;">✓ כריע</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; font-weight: bold;">Type-2 (חופשי-הקשר)</td>
+                                    <td style="padding: 12px;">Stack (ליניארי)</td>
+                                    <td style="padding: 12px;">a^n b^n</td>
+                                    <td style="padding: 12px; color: #28a745;">✓ כריע</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td style="padding: 12px; font-weight: bold;">Type-1 (תלוי-הקשר)</td>
+                                    <td style="padding: 12px;">ליניארי בטור</td>
+                                    <td style="padding: 12px;">a^n b^n c^n</td>
+                                    <td style="padding: 12px; color: #28a745;">✓ כריע</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; font-weight: bold;">Type-0 (כללי)</td>
+                                    <td style="padding: 12px;">בלתי מוגבל</td>
+                                    <td style="padding: 12px;">כל שפה חישובית</td>
+                                    <td style="padding: 12px; color: #dc3545;">✗ לא כריע</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="section">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <span>🔁 המרה בין דקדוקים לאוטומטים</span>
+                                <span class="arrow">▼</span>
+                            </div>
+                            <div class="section-content">
+
+                                <h3>🔄 איך ממירים דקדוק לאוטומט (ולהפך)</h3>
+                                <div style="display: grid; gap: 20px; margin: 20px 0;">
+
+                              
+                                    <div style="background: linear-gradient(135deg, #f5cba7, #f0b27a); padding: 20px; border-radius: 12px; border-left: 5px solid #e67e22;">
+                                        <h4 style="color: #af601a;">📤 דקדוק -> אוטומט סופי (DFA/NFA)</h4>
+                                        <p><strong>הקשר:</strong> כל דקדוק רגולרי (Type-3) שקול לאוטומט סופי (NFA/DFA).</p>
+                                        <p><strong>שיטה:</strong> עבור כל כלל בדקדוק מהצורה <code>A → aB</code> יוצרים מעבר מהמצב <code>A</code> ל־<code>B</code> על הקלט <code>a</code>.</p>
+                                        <p><strong>כלל סיום:</strong> אם <code>A → a</code> אז המצב <code>A</code> מוביל למצב מקבל על הסימן <code>a</code>.</p>
+                                        <p><strong>מצב התחלתי:</strong> הסמל ההתחלתי של הדקדוק (לרוב S).</p>
+                                        <div style="background: #fff5e6; padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                            <strong>דוגמה:</strong><br>
+                                            דקדוק:<br>
+                                            S → aB | a<br>
+                                            B → bS | b<br>
+                                            ← האוטומט יכיל מצבים S ו-B, עם מעברים מתאימים לפי כל כלל.
+                                        </div>
+                                    </div>
+
+                                    <div style="background: linear-gradient(135deg, #aed6f1, #5dade2); padding: 20px; border-radius: 12px; border-left: 5px solid #2980b9; margin-top: 20px;">
+                                        <h4 style="color: #1f618d;">📥 אוטומט סופי -> דקדוק רגולרי</h4>
+                                        <p><strong>שיטה:</strong> כל מצב באוטומט הופך למשתנה דקדוקי. אם <code>d(p,a) = q</code> אז מוסיפים כלל <code>p → a q</code>.</p>
+                                        <p><strong>מצבים מקבלים:</strong> אם <code>q</code> מצב מקבל, אז מוסיפים גם <code>p → a</code>.</p>
+                                        <p><strong>התחלה:</strong> המצב ההתחלתי של האוטומט הוא גם הסמל ההתחלתי של הדקדוק.</p>
+                                        <div style="background: #eaf2f8; padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                            <strong>דוגמה:</strong><br>
+                                            אוטומט עבור השפה (ab)*a:<br>
+                                            מצבים: q0, q1<br>
+                                            מעברים: q0 --a→ q2, q2 --b→ q0<br>
+                                            דקדוק: q0 → a q2, q2 → b q0, q0 → a
+                                        </div>
+                                    </div>
+
+                                    <div style="background: linear-gradient(135deg, #d5f5e3, #82e0aa); padding: 20px; border-radius: 12px; border-left: 5px solid #27ae60; margin-top: 20px;">
+                                        <h4 style="color: #1e8449;">📘 דקדוק חופשי-הקשר ↔ אוטומט מחסנית (PDA)</h4>
+                                        <p><strong>שקילות:</strong> לכל דקדוק חופשי-הקשר (Type-2) יש PDA שמקבל את אותה שפה, ולהפך.</p>
+                                        <p><strong>PDA ← דקדוק:</strong> לכל מעבר של ה־PDA, בונים כלל שמתאים לשינויי המחסנית תוך שמירה על התחביר.</p>
+                                        <p><strong>דקדוק ← PDA:</strong> בונים PDA שמדמה את הגזירה השמאלית של הדקדוק בעזרת המחסנית.</p>
+                                        <p><strong>שימושי ב:</strong> תיאור תחביר של שפות תכנות.</p>
+                                        <div style="background: #d4efdf; padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                            <strong>דוגמה:</strong><br>
+                                            דקדוק לשפה aⁿbⁿ:<br>
+                                            S → aSb | ab<br>
+                                            PDA דוחף 'a' על כל a, ומוריד על כל b.
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top: 30px; background: #f8f9fa; padding: 20px; border-radius: 10px; border: 2px solid #6c757d;">
+                                        <h4 style="color: #343a40;">📊 טבלת השוואה כללית</h4>
+                                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
+                                            <thead style="background: #6c757d; color: white;">
+                                                <tr>
+                                                    <th style="padding: 12px; text-align: right;">סוג דקדוק</th>
+                                                    <th style="padding: 12px; text-align: right;">מודל חישובי</th>
+                                                    <th style="padding: 12px; text-align: right;">המרה לדקדוק</th>
+                                                    <th style="padding: 12px; text-align: right;">שקילות מלאה</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background: #f8f9fa;">
+                                                    <td style="padding: 12px;">Type-3 (רגולרי)</td>
+                                                    <td style="padding: 12px;">אוטומט סופי</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 12px;">Type-2 (חופשי-הקשר)</td>
+                                                    <td style="padding: 12px;">אוטומט מחסנית</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                </tr>
+                                                <tr style="background: #f8f9fa;">
+                                                    <td style="padding: 12px;">Type-1 (תלוי-הקשר)</td>
+                                                    <td style="padding: 12px;">מכונת טיורינג מוגבלת ליניארית</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 12px;">Type-0 (כללי)</td>
+                                                    <td style="padding: 12px;">מכונת טיורינג</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                    <td style="padding: 12px; color: #28a745;">✓</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        
+                
+
+        
+        
+        
+        <div class="footer">
+            <h3>🌟 סיכום</h3>
+            <p>בדף זה סקרנו דקדוקים פורמליים: מה הם, איך מגדירים גזירה, דוגמאות ועצי גזירה, והיררכיית חומסקי וסוגי הדקדוקים. הבנה זו חיונית לתורת השפות וקומפילציה.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-header');
+            if (sections.length > 0) {
+                toggleSection(sections[0]);
+            }
+        });
+
+        function toggleSection(headerElement) {
+            const content = headerElement.nextElementSibling;
+            const arrow = headerElement.querySelector('.arrow');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                arrow.classList.add('rotated');
+            }
+        }
+
+        const progressBar = document.getElementById('progressBar');
+        const container = document.querySelector('.container');
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = container.scrollHeight;
+            const winHeight = window.innerHeight;
+            const scrollPercent = (scrollTop) / (docHeight - winHeight);
+            const scrollPercentRounded = Math.round(scrollPercent * 100);
+            
+            if(progressBar) {
+                progressBar.style.width = `${Math.min(scrollPercentRounded, 100)}%`;
+            }
+        });
+    </script>
+</body>
+</html>
