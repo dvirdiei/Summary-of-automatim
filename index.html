@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סיכומים: אוטומטים ושפות פורמליות</title>
+    <style>
+        /* הגדרות כלליות לדף */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* קונטיינר מרכזי שמחזיק את התוכן */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* עיצוב הכותרת הראשית */
+        header h1 {
+            font-size: 2.5em;
+            color: #1877f2; /* כחול בהשראת פייסבוק/לינקדאין */
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #606770;
+            margin-bottom: 40px;
+        }
+
+        /* רשת שמכילה את כרטיסיות הנושאים */
+        .topics-grid {
+            display: grid;
+            /* יוצר 2 עמודות במחשב, ועמודה אחת בנייד באופן אוטומטי */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; /* רווח בין הכרטיסיות */
+        }
+
+        /* עיצוב כרטיסיית נושא */
+        .topic-card {
+            display: block; /* מאפשר לכל הכרטיסייה להיות קישור */
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-top: 4px solid #1877f2;
+        }
+
+        /* אפקט ריחוף עדין כשעוברים עם העכבר */
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .topic-card .icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .topic-card h2 {
+            font-size: 1.5em;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .topic-card p {
+            font-size: 1em;
+            color: #606770;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>אוטומטים ושפות פורמליות</h1>
+            <p>דף סיכומים ראשי</p>
+        </header>
+
+        <main>
+            <div class="topics-grid">
+                <a href="משפט נרוד.html" class="topic-card">
+                    <div class="icon">🧠</div>
+                    <h2>משפט נרוד</h2>
+                    <p>כלי אלגברי חזק המאפיין שפות רגולריות באמצעות יחסי שקילות, ומשמש להוכחה או הפרכה של רגולריות.</p>
+                </a>
+
+                <a href="למת הניפוח.html" class="topic-card">
+                    <div class="icon">📜</div>
+                    <h2>למת הניפוח</h2>
+                    <p>משפט מרכזי המאפשר להוכיח ששפה **אינה** רגולרית, על ידי הדגמת תכונת "הניפוח" שקיימת בכל שפה רגולרית.</p>
+                </a>
+
+                <a href="אסד.html" class="topic-card">
+                    <div class="icon">💡</div>
+                    <h2>אס"ד</h2>
+                    <p>תיאור תמציתי על אוטמוט סופי דטרמנסטי </p>
+                </a>
+
+                <a href="אסלד.html" class="topic-card">
+                    <div class="icon">⚙️</div>
+                    <h2>אסל"ד</h2>
+                    <p>תיאור תמציתי על אוטומט</p>
+                </a>
+
+                <a href="חזקה ומכפלה .html" class="topic-card">
+                    <div class="icon">🔗</div>
+                    <h2>אוטומטים חזקה ומכפלה</h2>
+                    <p>תיאור של פעולות חזקה ומכפלה על שפות פורמליות, כולל תכונות מרכזיות ושימושים.</p>
+                </a>
+                <a href="ביטוים רגולרים.html" class="topic-card">
+                    <div class="icon">🔤</div>
+                    <h2>ביטויים רגולריים</h2>
+                    <p>כלי עוצמתי לתיאור שפות פורמליות באמצעות תבניות טקסטואליות.</p>
+                </a>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

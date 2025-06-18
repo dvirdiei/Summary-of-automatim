@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיידעון: ביטויים רגולריים ותכונותיהם</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .theorem-box {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid #4caf50;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theorem-title {
+            font-size: 1.8em;
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .section {
+            background: white;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-content {
+            padding: 30px;
+            display: none;
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 15px 0;
+            direction: ltr;
+        }
+
+        .example-box {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* כפתור חזרה לדף הבית */
+.home-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    font-family: inherit;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.home-button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .home-button {
+        top: 10px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">
+        🏠 דף הבית
+    </a>
+    <div class="container">
+        <div class="header">
+            <h1>📄 ביטויים רגולריים ותכונותיהם</h1>
+            <p>היסודות של ביטויים רגולריים, בניית אוטומט, סגירות וזהויות</p>
+        </div>
+        
+        <div class="content">
+            <div class="theorem-box">
+                <div class="theorem-title">⚡ מהו ביטוי רגולרי?</div>
+                <p>ביטוי רגולרי הוא תיאור תחבירי של שפה רגולרית. באמצעות סינטקס מוגדר באינדוקציית מבנה, אפשר לתאר קבוצה של מילים מעל אלפבית נתון.</p>
+            </div>
+            
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📜 סינטקס וסמנטיקה של ביטויים רגולריים</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>סינטקס:</strong> אוסף הביטויים RS מוגדר באופן רקורסיבי:</p>
+                    <ul>
+                        <li>אטומים: ∅, ε ∈ R; לכל s ∈ Σ, s ∈ R.</li>
+                        <li>אם r1, r2 ∈ R אז (r1 + r2) ∈ R ו-(r1·r2) ∈ R.</li>
+                        <li>אם r ∈ R אז (r*) ∈ R.</li>
+                    </ul>
+                    <p><strong>סמנטיקה:</strong> פונקציה L: R → 2^{Σ*}:</p>
+                    <div class="formula">
+                        L[∅] = ∅<br>
+                        L[ε] = {ε}<br>
+                        L[s] = {s} לכל s ∈ Σ<br>
+                        L[r1 + r2] = L[r1] ∪ L[r2]<br>
+                        L[r1·r2] = L[r1]·L[r2]<br>
+                        L[r*] = (L[r])*
+                    </div>
+                </div>
+            </div>
+            <!-- סעיף מורחב: סגירות לשפות רגולריות -->
+<div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+        <span>🔄 סגירות לשפות רגולריות (מורחב)</span>
+        <span class="arrow">▼</span>
+    </div>
+    <div class="section-content">
+        <p>
+            משפחת השפות הרגולריות סגורה תחת הפעולות הבסיסיות: איחוד, שרשור וכוכבית (Kleene star). החזקה הזו מאפשרת לבנות לשונות מורכבות מתוך לשונות פשוטות, וליישם אלגוריתמים לבדיקת שייכות מילה ללשון, בדיקות שוויון לשפות ועוד. 
+            בסעיף זה נרחיב על ההוכחות והבניית האוטומטים לכל פעולה, תבניות נפוצות, וכיצד משלבים במימוש מעשי.
+        </p>
+        <!-- הסבר כללי -->
+        <p>
+            <strong>
+            ⚠️ הערה: אם יש אינסוף חיתוכים, איחודים או כוכביות, השפה לא בהכרח רגולרית. לדוגמה, שפה שמכילה את כל המילים עם מספר כוכביות אינסופי אינה רגולרית, כיוון שאוטומט סופי לא יכול לייצג אינסוף מצבים שונים.</p>
+        </strong>
+            
+        <!-- הוכחה כללית -->
+        <div class="theorem-box">
+            <div class="theorem-title">⚡ הוכחת סגירות (באופן מאקרו)</div>
+            <p>
+                נתונות שתי לשונות רגולריות L<sub>1</sub> ו-L<sub>2</sub>. נגדיר אוטומטים שמקבלים כל אחת מהן (NFA או DFA). נבנה עבור כל פעולה אוטומט חדש (בדרך כלל NFA עם ε-מעברים), ואז אם נדרש נהפוך אותו ל-DFA.
+                בכל שלב משתמשים בבנייה מובנית על המבנים הקיימים. 
+            </p>
+            <p>
+                השיטות האלו מבוססות על עובדה ש-NFA עם ε-מעברים יכול לייצג בקלות פעולות חיבור, שרשור ותאבון (star), ורק בסוף אם נדרש לביצועים או לניתוחים פורמליים נהפוך ל-DFA באמצעות אלגוריתם subset construction. 
+            </p>
+            <p style="font-size:0.9em; font-style: italic;">
+                ההרחבה בפירוט של כל שלב מאפשרת גם להבין היכן עשויות לצוץ התפוצצויות מצבים (state explosion) וכיצד להתגבר בעזרת מינימיזציה או ניתוח סימבולי.
+            </p>
+        </div>
+
+        <!-- איחוד -->
+        <div class="subsection">
+            <div class="theorem-title">🔗 איחוד (Union)</div>
+            <p>
+                נניח שיש לנו NFA (או DFA) שמקבל L<sub>1</sub> בשם A<sub>1</sub> = (Q<sub>1</sub>, Σ, δ<sub>1</sub>, q<sub>01</sub>, F<sub>1</sub>), ואוטומט שמקבל L<sub>2</sub> בשם A<sub>2</sub> = (Q<sub>2</sub>, Σ, δ<sub>2</sub>, q<sub>02</sub>, F<sub>2</sub>). 
+                נבנה NFA חדש A<sub>union</sub> שמקבל L<sub>1</sub> ∪ L<sub>2</sub> כך:
+            </p>
+            <ul>
+                <li>
+                    <strong>מצב התחלתי חדש:</strong> q<sub>new</sub> ∉ Q<sub>1</sub>∪Q<sub>2</sub>. 
+                </li>
+                <li>
+                    <strong>Q:</strong> Q<sub>1</sub> ∪ Q<sub>2</sub> ∪ {q<sub>new</sub>}.
+                </li>
+                <li>
+                    <strong>אוסף המצבים המקבלים:</strong> F = F<sub>1</sub> ∪ F<sub>2</sub>.
+                </li>
+                <li>
+                    <strong>פונקציית המעברים δ:</strong> 
+                    <ul>
+                        <li>כל המעברים הקיימים בתוך A<sub>1</sub> ו-A<sub>2</sub> נשמרים כפי שהם.</li>
+                        <li>הוספת שני ε-מעברים מ-q<sub>new</sub> ל-q<sub>01</sub> ול-q<sub>02</sub> בהתאמה: 
+                            δ(q<sub>new</sub>, ε) = {q<sub>01</sub>, q<sub>02</sub>}.
+                        </li>
+                        <li>אם NFA-ים המקוריים נסתמכים על ε-מעברים פנימיים, נשמרים גם אותם. 
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                בתצוגה גרפית: המצב התחלתי החדש מקבל קשתות ε אל שני המצבים ההתחלתיים של המשנאים. במידה ואחת מההרצות מסתיימת במצב קבלה, המילה מתקבלת. 
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>דיאגרמה סכמטית</h3>
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- מצב התחלתי חדש -->
+                        <circle cx="30" cy="50" r="12" stroke="black" stroke-width="1.5" fill="lightyellow"/>
+                        <text x="30" y="50" font-size="10" text-anchor="middle" dominant-baseline="middle">qₙ</text>
+                        <!-- מצבי התחלה של A1 ו-A2 -->
+                        <circle cx="80" cy="30" r="12" stroke="black" stroke-width="1.5" fill="lightblue"/>
+                        <text x="80" y="30" font-size="8" text-anchor="middle" dominant-baseline="middle">q₀₁</text>
+                        <circle cx="80" cy="70" r="12" stroke="black" stroke-width="1.5" fill="lightgreen"/>
+                        <text x="80" y="70" font-size="8" text-anchor="middle" dominant-baseline="middle">q₀₂</text>
+                        <!-- קשתות ε -->
+                        <defs>
+                            <marker id="arr" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        <line x1="40" y1="50" x2="68" y2="32" stroke="black" stroke-width="1" marker-end="url(#arr)" stroke-dasharray="4"/>
+                        <line x1="40" y1="50" x2="68" y2="68" stroke="black" stroke-width="1" marker-end="url(#arr)" stroke-dasharray="4"/>
+                        <text x="50" y="40" font-size="8">ε</text>
+                        <text x="50" y="60" font-size="8">ε</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>טבלת מעבר (קטע)</h3>
+                    <table>
+                        <tr><th>מצב\קלט</th><th>ε</th><th>a</th><th>b</th></tr>
+                        <tr><td>qₙ →</td><td>{q₀₁, q₀₂}</td><td>-</td><td>-</td></tr>
+                        <!-- שורות נוספות עבור מצבי A1 ו-A2 יתווספו כאן בהתאם למעברים הקיימים -->
+                    </table>
+                    <p style="font-size:0.9em; margin-top:8px;">
+                        <strong>הערה:</strong> ε-מעברים מסומנים בקו מקווקו בדיאגרמה ובטבלה מצוינים בעמודת ε.
+                    </p>
+                </div>
+            </div>
+            <p style="font-size:0.9em;">
+                לאחר בנייה זו, מתקבל NFA עם ε-מעברים. אם נדרש DFA, נבצע subset construction (הרחבה: נפרט בהמשך בסעיף ההמרה). 
+            </p>
+        </div>
+
+        <!-- שרשור -->
+        <div class="subsection">
+            <div class="theorem-title">🔗 שרשור (Concatenation)</div>
+            <p>
+                נניח A<sub>1</sub> מקבל L<sub>1</sub>, A<sub>2</sub> מקבל L<sub>2</sub>. כדי לקבל L<sub>1</sub>·L<sub>2</sub>, בונים NFA הבא:
+            </p>
+            <ul>
+                <li>נשמור את כל המצבים של A<sub>1</sub> ו-A<sub>2</sub> (ללא שינוי שמות כדי למנוע התנגשות).</li>
+                <li>נגדיר q<sub>start</sub> להיות q<sub>01</sub> של A<sub>1</sub> (אם זה ה-NFA המקורי הוא כבר במבנה עם מצב התחלתי מבודד).</li>
+                <li>לכל מצב קבלה p ∈ F<sub>1</sub>, נוסיף ε-מעבר אל q<sub>02</sub> (מצב ההתחלה של A<sub>2</sub>): δ(p, ε) ∋ q<sub>02</sub>. 
+                    בכך, לאחר קריאת מילה מקבלת ב-A<sub>1</sub>, ניתן להמשיך לקרוא מילה שמתקבלת ב-A<sub>2</sub>.
+                </li>
+                <li>קבוצת המצבים המקבלים החדשה תהיה F<sub>2</sub> (רק מצבי הקבלה של ה-A<sub>2</sub>). 
+                    אם A<sub>1</sub> מקבל גם את המילה הריקה ורוצים לכלול אותה, יש להבטיח ש-q<sub>02</sub> נמצא ב־ε-closure של q<sub>start</sub>, או להוסיף ε-מעבר מתאים מתוך מצב ההתחלה (פרט טכני בהתאם להגדרה).
+                </li>
+            </ul>
+            <p>
+                במבנה גרפי, המעברים ממצבי הקבלה ב-A<sub>1</sub> אל התחלת A<sub>2</sub> הם ב-epsilon. 
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>דיאגרמה סכמטית</h3>
+                    <svg viewBox="0 0 250 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- מצבי A1 -->
+                        <circle cx="50" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#d0f0fd"/>
+                        <text x="50" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">q₀₁</text>
+                        <circle cx="100" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#d0f0fd"/>
+                        <text x="100" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">p ∈ F₁</text>
+                        <!-- ε-מעבר ל-A2 -->
+                        <defs>
+                            <marker id="arr2" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        <line x1="112" y1="50" x2="150" y2="50" stroke="black" stroke-width="1" marker-end="url(#arr2)" stroke-dasharray="4"/>
+                        <text x="130" y="45" font-size="8">ε</text>
+                        <!-- מצבי A2 -->
+                        <circle cx="180" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#d0f8e8"/>
+                        <text x="180" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">q₀₂</text>
+                        <circle cx="230" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#d0f8e8"/>
+                        <text x="230" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">F₂</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>טבלת מעבר (קטע)</h3>
+                    <table>
+                        <tr><th>מצב\קלט</th><th>ε</th><th>a</th><th>b</th></tr>
+                        <tr><td>p ∈ F₁</td><td>{q₀₂}</td><td>-</td><td>-</td></tr>
+                        <!-- שורות נוספות עבור A1 ו-A2 בהתאם למעברים המקוריים -->
+                    </table>
+                    <p style="font-size:0.9em; margin-top:8px;">
+                        <strong>הערה:</strong> כפי שאפשר לראות, המעבר לקריאת חלק שני מתבצע באמצעות ε-מעבר בין האוטומטים.
+                    </p>
+                </div>
+            </div>
+            <p style="font-size:0.9em;">
+                דגש על טיפול במילה הריקה: אם L<sub>1</sub> מכילה ε, דאגו שה-ε-closure של מצב ההתחלה של A<sub>1</sub> יכלול את q<sub>02</sub>, או הוסיפו ε-מעבר מתאים. :contentReference[oaicite:0]{index=0}
+            </p>
+        </div>
+
+        <!-- כוכבית -->
+        <div class="subsection">
+            <div class="theorem-title">🔗 כוכבית (Kleene Star)</div>
+            <p>
+                נתון אוטומט A שמקבל L. כדי לקבל L* (all concatenations של אפס או יותר מילים מ-L), בונים NFA כך:
+            </p>
+            <ul>
+                <li>מצב התחלתי חדש q<sub>new</sub> ומצב קבלה חדש q<sub>acc</sub> (שתוכלו לאחד אם תרצו, אך נפריד להבהרה).</li>
+                <li>הוסיפו ε-מעבר מ-q<sub>new</sub> ל-q<sub>start</sub> של A, וגם ε-מעבר ישיר מ-q<sub>new</sub> ל-q<sub>acc</sub> כדי לקבל את המילה הריקה.</li>
+                <li>מכל מצב קבלה p ∈ F של A, הוסיפו:
+                    <ul>
+                        <li>ε-מעבר חזרה ל-q<sub>start</sub> של A (כדי לקרוא פעם נוספת מ-L).</li>
+                        <li>ε-מעבר אל-q<sub>acc</sub> (כדי לסיים ולהתקבל).</li>
+                    </ul>
+                </li>
+                <li>קבוצת המצבים המקבלים החדשה כוללת רק את q<sub>acc</sub>.</li>
+            </ul>
+            <p>
+                במבנה גרפי, יש מעגלים של ε שמאפשרים "לנעול" אפס או יותר חזרות. 
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>דיאגרמה סכמטית</h3>
+                    <svg viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- q_new -->
+                        <circle cx="40" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#fff3b0"/>
+                        <text x="40" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">qₙew</text>
+                        <!-- q_start של A -->
+                        <circle cx="100" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#c0eaff"/>
+                        <text x="100" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">q₀</text>
+                        <!-- q_acc -->
+                        <circle cx="160" cy="50" r="12" stroke="black" stroke-width="1.5" fill="#c8f7c5"/>
+                        <text x="160" y="50" font-size="8" text-anchor="middle" dominant-baseline="middle">qₐcc</text>
+                        <defs>
+                            <marker id="arr3" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        <!-- ε-מעברים -->
+                        <line x1="52" y1="50" x2="88" y2="50" stroke="black" stroke-width="1" marker-end="url(#arr3)" stroke-dasharray="4"/>
+                        <text x="70" y="45" font-size="8">ε</text>
+                        <line x1="52" y1="50" x2="158" y2="50" stroke="black" stroke-width="1" marker-end="url(#arr3)" stroke-dasharray="4"/>
+                        <text x="100" y="40" font-size="8">ε</text>
+                        <!-- חזרה ממצבי קבלה של A ל-q₀ ו-qₐcc (יש להניח נקודה p) -->
+                        <!-- לדוגמה: מעגל -->
+                        <path d="M 100 62 C 100 80, 140 80, 140 62" stroke="black" stroke-width="1" marker-end="url(#arr3)" fill="none" stroke-dasharray="4"/>
+                        <text x="125" y="75" font-size="8">ε</text>
+                        <path d="M 100 38 C 100 20, 140 20, 140 38" stroke="black" stroke-width="1" marker-end="url(#arr3)" fill="none" stroke-dasharray="4"/>
+                        <text x="125" y="25" font-size="8">ε</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>טבלת מעבר (קטע)</h3>
+                    <table>
+                        <tr><th>מצב\קלט</th><th>ε</th><th>a</th><th>b</th></tr>
+                        <tr><td>qₙew →</td><td>{q₀, qₐcc}</td><td>-</td><td>-</td></tr>
+                        <tr><td>p ∈ F (A)</td><td>{q₀, qₐcc}</td><td>-</td><td>-</td></tr>
+                        <!-- מעברים של A נשמרים בין q₀ ושאר מצבי A לפי האלפבית -->
+                    </table>
+                    <p style="font-size:0.9em; margin-top:8px;">
+                        <strong>הערה:</strong> מבנה זה תומך גם במקרה שבו L מכיל ε; המילה הריקה מתקבלת דרך qₙew → qₐcc.
+                    </p>
+                </div>
+            </div>
+            <p style="font-size:0.9em;">
+                לאחר בניית ה-NFA עם ε-מעברים, ניתן, אם יש צורך ב-DFA, להמיר באמצעות subset construction, ולבצע במידת הצורך מינימיזציה. :contentReference[oaicite:1]{index=1}
+            </p>
+        </div>
+
+        <!-- הערות נוספות על סגירות אחרות -->
+        <div class="subsection">
+            <div class="theorem-title">✳️ סגירות נוספות</div>
+            <p>
+                מלבד האיחוד, השרשור והכוכבית, ניתן להפנות להרחבות נוספות:
+            </p>
+            <ul>
+                <li><strong>השלמה (Complement):</strong> עבור DFA ניתן להפוך מצבי קבלה ללא-קבלה ולהפך, מקבלים את השפה המשלימה. יש לשים לב שהתנהגות זו מחייבת DFA מלא (total), ולכן אם מעברים חסרים יש להוסיף “dead state”.</li>
+                <li><strong>חיתוך (Intersection):</strong> ניתן לבנות DFA מכפול מצבים (product construction) שמקבל רק אם שתי המכונות מסכימות. זה מבוסס על סגירות תחת קומפלמנט ואיחוד: L₁ ∩ L₂ = ( (L₁ᶜ ∪ L₂ᶜ) )ᶜ.</li>
+                <li><strong>הפרשה (Difference):</strong> L₁ \ L₂ = L₁ ∩ (Σ* \ L₂), משולבת חיתוך והשלמה.</li>
+                <li><strong>הפיכה לרגולרי (Regular Division) ותכונות נוספות:</strong> בשפות רגולריות קיימות פעולות מתקדמות כמו quotients (שארית ימנית ושמאלית), reversal; גם הן שומרות סדירות. לדוגמה, היפוך מילה (reverse) מוביל לבנייה ב-NFA הפוך עם קשתות ε ההופכות כיוון המעברים ומחליפים מצבי התחלה ומקבלים.</li>
+            </ul>
+            <p style="font-size:0.9em;">
+                כל הבניות הללו נובעות מהעובדה שב-NFA ניתן לטפל בקלות ב-ε-מעברים ובכפול מצבים, ואחר כך להמיר ל-DFA מלא לפי הצורך. :contentReference[oaicite:2]{index=2}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- סעיף מורחב: בניית אוטומט מתוך ביטוי רגולרי -->
+<div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+        <span>🏗️ בניית אוטומט מתוך ביטוי רגולרי (מורחב)</span>
+        <span class="arrow">▼</span>
+    </div>
+    <div class="section-content">
+        <!-- מבוא -->
+        <p>
+            בניית אוטומט מתוך ביטוי רגולרי (Thompson’s Construction) היא אלגוריתם יסודי לבניית NFA עם ε-מעברים שמתאים במדויק לשפה ש- regex מתאר. לאחר מכן, אם נדרש, נהפוך את ה-NFA ל-DFA באמצעות אלגוריתם subset construction. 
+            נפרט כאן את השלבים, נציג דיאגרמות סכמטיות, ונעבור דוגמה מלאה שלב אחר שלב.
+        </p>
+        
+        <!-- שלב 1: אטומים -->
+        <div class="subsection">
+            <div class="theorem-title">1. NFA בסיסי עבור אטומים</div>
+            <p>
+                עבור אטום s ∈ Σ, נבנה NFA קטן:
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>אטום s</h3>
+                    <svg viewBox="0 0 150 60" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrA" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        <!-- מצב התחלה -->
+                        <circle cx="30" cy="30" r="10" stroke="black" stroke-width="1.5" fill="#e0f7fa"/>
+                        <text x="30" y="30" font-size="8" text-anchor="middle" dominant-baseline="middle">qᵢ</text>
+                        <!-- מצב קבלה -->
+                        <circle cx="100" cy="30" r="10" stroke="black" stroke-width="1.5" fill="#c8e6c9"/>
+                        <circle cx="100" cy="30" r="8" stroke="black" stroke-width="0.5" fill="none"/>
+                        <text x="100" y="30" font-size="8" text-anchor="middle" dominant-baseline="middle">q_f</text>
+                        <!-- מעבר -->
+                        <line x1="40" y1="30" x2="90" y2="30" stroke="black" stroke-width="1.2" marker-end="url(#arrA)"/>
+                        <text x="65" y="25" font-size="8">s</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>טבלת מעבר</h3>
+                    <table>
+                        <tr><th>מצב\קלט</th><th>s</th><th>ε</th></tr>
+                        <tr><td>qᵢ →</td><td>{q_f}</td><td>-</td></tr>
+                        <tr><td>q_f *</td><td>-</td><td>-</td></tr>
+                    </table>
+                </div>
+            </div>
+            <p style="font-size:0.9em;">
+                עבור ε (המילה הריקה): בונים NFA עם מצב התחלה = מצב קבלה. עבור ∅: בונים NFA עם מצב התחלה ללא מסלול לקבלה.
+            </p>
+        </div>
+        
+        <!-- שלב 2: איחוד (Union) -->
+        <div class="subsection">
+            <div class="theorem-title">2. בניית NFA לאיחוד (r1 + r2)</div>
+            <p>
+                נתונים NFA₁ עבור r1 ו-NFA₂ עבור r2. לבניית NFA עבור r1 + r2:
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>מבנה האיחוד</h3>
+                    <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrU" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        <!-- מצב התחלה החדש -->
+                        <circle cx="50" cy="75" r="12" stroke="black" stroke-width="2" fill="#fff3cd"/>
+                        <text x="50" y="75" font-size="10" text-anchor="middle" dominant-baseline="middle">qₙₑw</text>
+                        
+                        <!-- NFA₁ -->
+                        <rect x="120" y="25" width="80" height="40" rx="5" stroke="#0066cc" stroke-width="2" fill="#e6f3ff"/>
+                        <text x="160" y="45" font-size="12" text-anchor="middle" dominant-baseline="middle">NFA₁</text>
+                        <circle cx="130" cy="45" r="8" stroke="#0066cc" stroke-width="1.5" fill="white"/>
+                        <text x="130" y="45" font-size="8" text-anchor="middle">q₀₁</text>
+                        <circle cx="190" cy="45" r="8" stroke="#0066cc" stroke-width="1.5" fill="white"/>
+                        <circle cx="190" cy="45" r="6" stroke="#0066cc" stroke-width="1" fill ="none"/>
+                        <text x="190" y="45" font-size="8" text-anchor="middle">F₁</text>
+                        
+                        <!-- NFA₂ -->
+                        <rect x="120" y="85" width="80" height="40" rx="5" stroke="#009900" stroke-width="2" fill="#f0fff0"/>
+                        <text x="160" y="105" font-size="12" text-anchor="middle" dominant-baseline="middle">NFA₂</text>
+                        <circle cx="130" cy="105" r="8" stroke="#009900" stroke-width="1.5" fill="white"/>
+                        <text x="130" y="105" font-size="8" text-anchor="middle">q₀₂</text>
+                        <circle cx="190" cy="105" r="8" stroke="#009900" stroke-width="1.5" fill="white"/>
+                        <circle cx="190" cy="105" r="6" stroke="#009900" stroke-width="1" fill ="none" />
+                        <text x="190" y="105" font-size="8" text-anchor="middle">F₂</text>
+                        
+                        <!-- מצב קבלה חדש -->
+                        <circle cx="250" cy="75" r="12" stroke="black" stroke-width="2" fill="#d4edda"/>
+                        <circle cx="250" cy="75" r="10" stroke="black" stroke-width="1" fill ="none"/>
+                        <text x="250" y="75" font-size="10" text-anchor="middle" dominant-baseline="middle">qₐcc</text>
+                        
+                        <!-- ε-מעברים -->
+                        <line x1="62" y1="70" x2="118" y2="50" stroke="red" stroke-width="2" marker-end="url(#arrU)" stroke-dasharray="5,3"/>
+                        <text x="85" y="58" font-size="10" fill="red">ε</text>
+                        
+                        <line x1="62" y1="80" x2="118" y2="100" stroke="red" stroke-width="2" marker-end="url(#arrU)" stroke-dasharray="5,3"/>
+                        <text x="85" y="92" font-size="10" fill="red">ε</text>
+                        
+                        <line x1="202" y1="45" x2="238" y2="70" stroke="red" stroke-width="2" marker-end="url(#arrU)" stroke-dasharray="5,3"/>
+                        <text x="218" y="55" font-size="10" fill="red">ε</text>
+                        
+                        <line x1="202" y1="105" x2="238" y2="80" stroke="red" stroke-width="2" marker-end="url(#arrU)" stroke-dasharray="5,3"/>
+                        <text x="218" y="95" font-size="10" fill="red">ε</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>אלגוריתם הבנייה</h3>
+                    <ol style="font-size:0.9em; text-align:right;">
+                        <li>צור מצב התחלה חדש qₙₑw</li>
+                        <li>צור מצב קבלה חדש qₐcc</li>
+                        <li>הוסף ε-מעבר: qₙₑw → q₀₁</li>
+                        <li>הוסף ε-מעבר: qₙₑw → q₀₂</li>
+                        <li>לכל p ∈ F₁: הוסף ε-מעבר p → qₐcc</li>
+                        <li>לכל p ∈ F₂: הוסף ε-מעבר p → qₐcc</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- שלב 3: שרשור (Concatenation) -->
+        <div class="subsection">
+            <div class="theorem-title">3. בניית NFA לשרשור (r1·r2)</div>
+            <p>
+                נתונים NFA₁ עבור r1 ו-NFA₂ עבור r2. לבניית NFA עבור r1·r2:
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>מבנה השרשור</h3>
+                    <svg viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrC" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        
+                        <!-- NFA₁ -->
+                        <rect x="30" y="25" width="120" height="50" rx="5" stroke="#0066cc" stroke-width="2" fill="#e6f3ff"/>
+                        <text x="90" y="45" font-size="12" text-anchor="middle" dominant-baseline="middle">NFA₁ (עבור r1)</text>
+                        <circle cx="50" cy="50" r="10" stroke="#0066cc" stroke-width="1.5" fill="white"/>
+                        <text x="50" y="50" font-size="8" text-anchor="middle">q₀₁</text>
+                        <circle cx="130" cy="50" r="10" stroke="#0066cc" stroke-width="1.5" fill="white"/>
+                        <circle cx="130" cy="50" r="8" stroke="#0066cc" stroke-width="1" fill ="none"/>
+                        <text x="130" y="50" font-size="8" text-anchor="middle">F₁</text>
+                        
+                        <!-- NFA₂ -->
+                        <rect x="200" y="25" width="120" height="50" rx="5" stroke="#009900" stroke-width="2" fill="#f0fff0"/>
+                        <text x="260" y="45" font-size="12" text-anchor="middle" dominant-baseline="middle">NFA₂ (עבור r2)</text>
+                        <circle cx="220" cy="50" r="10" stroke="#009900" stroke-width="1.5" fill="white"/>
+                        <text x="220" y="50" font-size="8" text-anchor="middle">q₀₂</text>
+                        <circle cx="300" cy="50" r="10" stroke="#009900" stroke-width="1.5" fill="white"/>
+                        <circle cx="300" cy="50" r="8" stroke="#009900" stroke-width="1" fill ="none"/>
+                        <text x="300" y="50" font-size="8" text-anchor="middle">F₂</text>
+                        
+                        <!-- ε-מעבר מחיבור -->
+                        <line x1="142" y1="50" x2="208" y2="50" stroke="red" stroke-width="2" marker-end="url(#arrC)" stroke-dasharray="5,3"/>
+                        <text x="175" y="45" font-size="12" fill="red">ε</text>
+                        
+                        <!-- חיצים פנימיים -->
+                        <line x1="60" y1="50" x2="120" y2="50" stroke="#666" stroke-width="1" marker-end="url(#arrC)"/>
+                        <line x1="230" y1="50" x2="290" y2="50" stroke="#666" stroke-width="1" marker-end="url(#arrC)"/>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>אלגוריתם הבנייה</h3>
+                    <ol style="font-size:0.9em; text-align:right;">
+                        <li>שמור את כל מצבי NFA₁ ו-NFA₂</li>
+                        <li>מצב התחלה: q₀₁</li>
+                        <li>מצבי קבלה: F₂ בלבד</li>
+                        <li>לכל p ∈ F₁: הוסף ε-מעבר p → q₀₂</li>
+                        <li>הסר את F₁ מקבוצת הקבלה</li>
+                    </ol>
+                    <p style="font-size:0.8em; margin-top:10px;">
+                        <strong>הערה:</strong> מילה מתקבלת רק אם עוברת דרך NFA₁ ואז דרך NFA₂
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- שלב 4: כוכבית (Kleene Star) -->
+        <div class="subsection">
+            <div class="theorem-title">4. בניית NFA לכוכבית (r*)</div>
+            <p>
+                נתון NFA עבור r. לבניית NFA עבור r*:
+            </p>
+            <div class="representation-grid">
+                <div class="diagram-container">
+                    <h3>מבנה הכוכבית</h3>
+                    <svg viewBox="0 0 350 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrK" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0,6 2,0 4" fill="black"/>
+                            </marker>
+                        </defs>
+                        
+                        <!-- מצב התחלה החדש -->
+                        <circle cx="50" cy="75" r="12" stroke="black" stroke-width="2" fill="#fff3cd"/>
+                        <text x="50" y="75" font-size="10" text-anchor="middle" dominant-baseline="middle">qₙₑw</text>
+                        
+                        <!-- NFA המקורי -->
+                        <rect x="120" y="50" width="120" height="50" rx="5" stroke="#6666cc" stroke-width="2" fill="#f0f0ff"/>
+                        <text x="180" y="70" font-size="12" text-anchor="middle" dominant-baseline="middle">NFA (עבור r)</text>
+                        <circle cx="140" cy="75" r="10" stroke="#6666cc" stroke-width="1.5" fill="white"/>
+                        <text x="140" y="75" font-size="8" text-anchor="middle">q₀</text>
+                        <circle cx="220" cy="75" r="10" stroke="#6666cc" stroke-width="1.5" fill="white"/>
+                        <circle cx="220" cy="75" r="8" stroke="#6666cc" stroke-width="1"fill ="none"/>
+                        <text x="220" y="75" font-size="8" text-anchor="middle">F</text>
+                        
+                        <!-- מצב קבלה חדש -->
+                        <circle cx="300" cy="75" r="12" stroke="black" stroke-width="2" fill="#d4edda"/>
+                        <circle cx="300" cy="75" r="10" stroke="black" stroke-width="1"fill ="none"/>
+                        <text x="300" y="75" font-size="10" text-anchor="middle" dominant-baseline="middle">qₐcc</text>
+                        
+                        <!-- ε-מעברים -->
+                        <!-- התחלה ל-NFA -->
+                        <line x1="62" y1="75" x2="128" y2="75" stroke="red" stroke-width="2" marker-end="url(#arrK)" stroke-dasharray="5,3"/>
+                        <text x="90" y="70" font-size="10" fill="red">ε</text>
+                        
+                        <!-- התחלה לקבלה (עבור ε) -->
+                        <path d="M 62 65 Q 175 30 288 65" stroke="red" stroke-width="2" marker-end="url(#arrK)" fill="none" stroke-dasharray="5,3"/>
+                        <text x="175" y="35" font-size="10" fill="red">ε</text>
+                        
+                        <!-- מקבלת NFA לקבלה חדשה -->
+                        <line x1="232" y1="75" x2="288" y2="75" stroke="red" stroke-width="2" marker-end="url(#arrK)" stroke-dasharray="5,3"/>
+                        <text x="260" y="70" font-size="10" fill="red">ε</text>
+                        
+                        <!-- חזרה: מקבלת NFA להתחלת NFA -->
+                        <path d="M 220 85 Q 180 120 140 85" stroke="red" stroke-width="2" marker-end="url(#arrK)" fill="none" stroke-dasharray="5,3"/>
+                        <text x="180" y="110" font-size="10" fill="red">ε</text>
+                    </svg>
+                </div>
+                <div class="table-container">
+                    <h3>אלגוריתם הבנייה</h3>
+                    <ol style="font-size:0.9em; text-align:right;">
+                        <li>צור מצב התחלה חדש qₙₑw</li>
+                        <li>צור מצב קבלה חדש qₐcc</li>
+                        <li>הוסף ε-מעבר: qₙₑw → q₀</li>
+                        <li>הוסף ε-מעבר: qₙₑw → qₐcc (עבור ε)</li>
+                        <li>לכל p ∈ F: הוסף ε-מעבר p → q₀ (חזרה)</li>
+                        <li>לכל p ∈ F: הוסף ε-מעבר p → qₐcc (סיום)</li>
+                    </ol>
+                    <p style="font-size:0.8em; margin-top:10px;">
+                        <strong>הערה:</strong> מבנה זה מאפשר 0, 1 או יותר חזרות של r
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔍 זהויות בין ביטויים רגולריים</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>זהויות יסודיות בביטויים רגולריים:</strong> הוכחת זהות נעשית באמצעות הכלה דו-כיוונית או בניית אוטומטים שקולים.</p>
+                    
+                    <!-- זהויות איחוד -->
+                    <div class="subsection">
+                        <div class="theorem-title">➕ זהויות איחוד (Union)</div>
+                        <div class="formula">
+                            r + r = r (Idempotent - כפל עצמי)<br>
+                            r₁ + r₂ = r₂ + r₁ (Commutative - חילופי)<br>
+                            (r₁ + r₂) + r₃ = r₁ + (r₂ + r₃) (Associative - קיבוצי)<br>
+                            r + ∅ = ∅ + r = r (Identity - יחידה)<br>
+                            r + (r₁ + r₂) = (r + r₁) + r₂ (איחוד מורחב)<br>
+                            r + r* = r* (הכלה בכוכבית)
+                        </div>
+                        <div class="example-box">
+                            <h4>📝 דוגמה לזהות איחוד</h4>
+                            <p><strong>a + b + a = a + b</strong></p>
+                            <p>הסבר: המילה 'a' מופיעה פעמיים באיחוד, לכן ניתן להשמיט את הכפילות.</p>
+                        </div>
+                    </div>
+
+                    <!-- זהויות שרשור -->
+                    <div class="subsection">
+                        <div class="theorem-title">🔗 זהויות שרשור (Concatenation)</div>
+                        <div class="formula">
+                            r₁ · r₂ ≠ r₂ · r₁ (Generally not commutative - בדרך כלל לא חילופי)<br>
+                            (r₁ · r₂) · r₃ = r₁ · (r₂ · r₃) (Associative - קיבוצי)<br>
+                            r · ε = ε · r = r (Identity - יחידה)<br>
+                            r · ∅ = ∅ · r = ∅ (Zero - אפס)<br>
+                            r · (r₁ + r₂) = r · r₁ + r · r₂ (Left distributive - פילוג שמאלי)<br>
+                            (r₁ + r₂) · r = r₁ · r + r₂ · r (Right distributive - פילוג ימני)<br>
+                            r · r = r² (ריבוע)<br>
+                            r · r* = r* · r = r⁺ (חיבור ע"י כוכבית)
+                        </div>
+                        <div class="example-box">
+                            <h4>📝 דוגמה לזהות שרשור</h4>
+                            <p><strong>(a + b) · c = a · c + b · c = ac + bc</strong></p>
+                            <p>הסבר: פילוג ימני - שרשור מפלג על איחוד.</p>
+                        </div>
+                    </div>
+
+                    <!-- זהויות כוכבית -->
+                    <div class="subsection">
+                        <div class="theorem-title">⭐ זהויות כוכבית (Kleene Star)</div>
+                        <div class="formula">
+                            (r*)* = r* (Idempotent - כפל עצמי)<br>
+                            ∅* = ε (Empty set star - כוכבית של קבוצה ריקה)<br>
+                            ε* = ε (Epsilon star - כוכבית של אפסילון)<br>
+                            r* = ε + r · r* (Recursive definition - הגדרה רקורסיבית)<br>
+                            r* = ε + r* · r (Alternative recursive - רקורסיה חלופית)<br>
+                            (r*)⁺ = r* (כוכבית פלוס שקולה לכוכבית)<br>
+                            r⁺ = r · r* = r* · r (הגדרת פלוס)<br>
+                            (r + s)* ⊇ (r* · s*)* (כוכבית של איחוד)<br>
+                            r* + s* ⊆ (r + s)* (איחוד כוכביות)
+                        </div>
+                        <div class="example-box">
+                            <h4>📝 דוגמה לזהות כוכבית</h4>
+                            <p><strong>a* = ε + a · a* = ε + aa* = ε + a + aa + aaa + ...</strong></p>
+                            <p>הסבר: כוכבית מייצרת את כל החזקות האפשריות כולל המילה הריקה.</p>
+                        </div>
+                    </div>
+
+                    <!-- זהויות נפוצות -->
+                    <div class="subsection">
+                        <div class="theorem-title">🌟 זהויות נפוצות ושימושיות</div>
+                        <div class="formula">
+                            (r + s)* = (r*s*)* (Arden's theorem variant)<br>
+                            r*(sr*)* = (r + s)* (Arden's theorem)<br>
+                            (rs)* = ε + r(sr)*s (חילוק לפי תבנית)<br>
+                            r*r* = r* (שרשור כוכביות)<br>
+                            (r*s*)* = (r*s)* (פישוט כוכביות מורכבות)<br>
+                            r + rr + rrr + ... = r* (סכום אינסופי)<br>
+                            (r + ε)* = r* (הוספת אפסילון לא משנה)
+                        </div>
+                        <div class="example-box">
+                            <h4>📝 דוגמה למשפט ארדן</h4>
+                            <p><strong>פתרון X = aX + b מוביל ל- X = a*b</strong></p>
+                            <p>הסבר: משפט ארדן מספק כלי לפתרון משוואות עם ביטויים רגולריים.</p>
+                        </div>
+                    </div>
+
+                    <!-- טעויות נפוצות -->
+                    <div class="subsection">
+                        <div class="theorem-title">⚠️ טעויות נפוצות בזהויות</div>
+                        <div style="background: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                            <h4 style="color: #d32f2f; margin-top: 0;">❌ טעויות שכיחות:</h4>
+                            <div class="formula" style="background: #ffcdd2;">
+                                <strong>שגוי:</strong> r₁ · r₂ = r₂ · r₁ (שרשור איננו חילופי!)<br>
+                                <strong>שגוי:</strong> (r + s)* = r* + s* (כוכבית לא מפלגת על איחוד)<br>
+                                <strong>שגוי:</strong> (r*)⁺ = r⁺ (כוכבית פלוס שונה מפלוס)<br>
+                                <strong>שגוי:</strong> r* · s* = (rs)* (שרשור כוכביות ≠ כוכבית שרשור)<br>
+                                <strong>שגוי:</strong> ∅ + r = ∅ (חבור עם ריק נותן את r)<br>
+                                <strong>שגוי:</strong> ε* = ∅ (אפסילון כוכבית = אפסילון)
+                            </div>
+                            
+                            <h4 style="color: #d32f2f;">✅ התיקונים הנכונים:</h4>
+                            <div class="formula" style="background: #c8e6c9;">
+                                <strong>נכון:</strong> r₁ · r₂ ≠ r₂ · r₁ (בדרך כלל)<br>
+                                <strong>נכון:</strong> (r + s)* ⊇ r* + s* (הכלה חד-כיוונית)<br>
+                                <strong>נכון:</strong> (r*)⁺ = r* (כוכבית פלוס = כוכבית)<br>
+                                <strong>נכון:</strong> r* · s* ⊆ (r + s)* (הכלה)<br>
+                                <strong>נכון:</strong> ∅ + r = r (יחידה לאיחוד)<br>
+                                <strong>נכון:</strong> ε* = ε (אפסילון כוכבית)
+                            </div>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>🎯 דוגמה לטעות נפוצה</h4>
+                            <p><strong>טעות:</strong> (ab)* = a*b*</p>
+                            <p><strong>למה זה שגוי:</strong> (ab)* מייצר: ε, ab, abab, ababab, ...</p>
+                            <p><strong>בעוד ש-</strong> a*b* מייצר: ε, a, b, aa, ab, bb, aab, abb, ...</p>
+                            <p><strong>המסקנה:</strong> אלה שפות שונות לחלוטין!</p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>💡 עצות להימנעות מטעויות</h4>
+                            <ul>
+                                <li><strong>בדוק עם דוגמאות:</strong> תמיד בדוק זהויות עם מילים קצרות</li>
+                                <li><strong>זכור סדר פעולות:</strong> כוכבית > שרשור > איחוד</li>
+                                <li><strong>שרשור לא חילופי:</strong> ab ≠ ba בדרך כלל</li>
+                                <li><strong>כוכבית תמיד כוללת ε:</strong> גם אם r לא מכיל ε</li>
+                                <li><strong>הבדל בין ∅ ל-ε:</strong> ריק מוחלט מול מילה ריקה</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- הוכחת זהות - דוגמה -->
+                    <div class="example-box">
+                        <h4>🔍 דוגמה להוכחת זהות: r + r = r</h4>
+                        <p><strong>הוכחה באמצעות הכלה דו-כיוונית:</strong></p>
+                        <p><strong>כיוון ראשון (⊆):</strong> L[r + r] ⊆ L[r]</p>
+                        <p>כל מילה w ∈ L[r + r] = L[r] ∪ L[r] = L[r], לכן w ∈ L[r]</p>
+                        
+                        <p><strong>כיוון שני (⊇):</strong> L[r] ⊆ L[r + r]</p>
+                        <p>כל מילה w ∈ L[r] נמצאת גם ב-L[r] ∪ L[r] = L[r + r]</p>
+                        
+                        <p><strong>מסקנה:</strong> L[r + r] = L[r], לכן r + r = r ✓</p>
+                    </div>
+            </div>
+        </div>
+        </div>
+        
+   
+
+            
+            <!-- משפט קליני מורחב -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📐 משפט קליני (Kleene) - הסבר מעמיק</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="theorem-box">
+                        <div class="theorem-title">⚡ ניסוח המשפט</div>
+                        <p><strong>משפט קליני:</strong> שפה L על אלפבית Σ היא רגולרית אם ורק אם קיים ביטוי רגולרי r כך ש-L = L[r].</p>
+                        <p>במילים אחרות: <em>משפחת השפות הרגולריות זהה בדיוק למשפחת השפות הניתנות לתיאור באמצעות ביטויים רגולריים.</em></p>
+                    </div>
+
+                    <!-- כיוון ראשון -->
+                    <div class="subsection">
+                        <div class="theorem-title">➡️ כיוון ראשון: ביטוי רגולרי ← שפה רגולרית</div>
+                        <p>
+                            <strong>טענה:</strong> אם L שפה רגולרית, אז קיים ביטוי רגולרי r כך ש-L = L[r].
+                        </p>
+                        <p>
+                            <strong>רעיון ההוכחה:</strong> נתון DFA שמקבל את L. נבנה ביטוי רגולרי באמצעות <em>אלגוריתם הסרת מצבים (State Elimination)</em> או <em>משוואות מצבים (State Equations)</em>.
+                        </p>
+                        
+                        <div class="example-box">
+                            <h4>🔧 שיטת הסרת מצבים</h4>
+                            <ol>
+                                <li><strong>התחלה:</strong> נתון DFA A = (Q, Σ, δ, q₀, F)</li>
+                                <li><strong>הכנה:</strong> הפוך את האוטומט ל-GNFA (Generalized NFA) שבו:
+                                    <ul>
+                                        <li>מצב התחלה אחד עם יציאה בלבד</li>
+                                        <li>מצב קבלה אחד עם כניסה בלבד</li>
+                                        <li>כל קשת מסומנת בביטוי רגולרי</li>
+                                    </ul>
+                                </li>
+                                <li><strong>הסרה:</strong> הסר מצבים אחד אחד (מלבד התחלה וקבלה):
+                                    <ul>
+                                        <li>עבור מצב q שמוסר, לכל זוג מצבים (p,r) שיש מסלול p→q→r</li>
+                                        <li>הוסף/עדכן קשת ישירה p→r עם הביטוי: (p→q)·(q→q)*·(q→r)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>תוצאה:</strong> הביטוי על הקשת הישירה מההתחלה לקבלה</li>
+                            </ol>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>📊 שיטת משוואות מצבים</h4>
+                            <p>לכל מצב q ∈ Q, נגדיר L_q = {w | δ*(q,w) ∈ F} (השפה של המילים שנקבלות החל מ-q)</p>
+                            <p>נכתוב מערכת משוואות:</p>
+                            <div class="formula">
+                                L_q = Σ_{a∈Σ} a·L_{δ(q,a)} + (ε אם q ∈ F, ∅ אחרת)
+                            </div>
+                            <p>פתרון המערכת נותן ביטויים רגולריים, ו-L = L_{q₀}.</p>
+                        </div>
+                    </div>
+
+                    <!-- כיוון שני -->
+                    <div class="subsection">
+                        <div class="theorem-title">⬅️ כיוון שני: שפה רגולrית ← ביטוי רגולרי</div>
+                        <div class="theorem-title">⬅️ כיוון שני: שפה רגולרית ← ביטוי רגולרי</div>
+                            <strong>טענה:</strong> אם r ביטוי רגולרי, אז L[r] שפה רגולרית.
+                        </p>
+                        <p>
+                            <strong>הוכחה:</strong> באינדוקציה על מבנה הביטוי הרגולרי, תוך שימוש ב-<em>Thompson's Construction</em>.
+                        </p>
+                        
+                        <div class="example-box">
+                            <h4>🏗️ שלבי ההוכחה</h4>
+                            <p><strong>בסיס האינדוקציה:</strong></p>
+                            <ul>
+                                <li>∅: השפה הריקה רגולרית (DFA ללא מצבי קבלה)</li>
+                                <li>ε: {ε} רגולרית (DFA עם מצב התחלה = מצב קבלה)</li>
+                                <li>a ∈ Σ: {a} רגולרית (DFA עם מעבר יחיד a)</li>
+                            </ul>
+                            
+                            <p><strong>צעד האינדוקציה:</strong></p>
+                            <ul>
+                                <li><strong>איחוד:</strong> אם L[r₁], L[r₂] רגולריות, אז L[r₁ + r₂] = L[r₁] ∪ L[r₂] רגולרית (סגירות תחת איחוד)</li>
+                                <li><strong>שרשור:</strong> אם L[r₁], L[r₂] רגולריות, אז L[r₁·r₂] = L[r₁]·L[r₂] רגולרית (סגירות תחת שרשור)</li>
+                                <li><strong>כוכבית:</strong> אם L[r] רגולרית, אז L[r*] = (L[r])* רגולרית (סגירות תחת כוכבית)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- משמעות ויישומים -->
+                    <div class="subsection">
+                        <div class="theorem-title">🎯 משמעות המשפט ויישומים</div>
+                        
+                        <div class="example-box">
+                            <h4>📈 משמעות תיאורטית</h4>
+                            <ul>
+                                <li><strong>שקילות ייצוגים:</strong> DFA, NFA, ε-NFA וביטויים רגולריים מתארים בדיוק את אותה משפחה של שפות</li>
+                                <li><strong>כלים לתכנון:</strong> ניתן לבחור את הייצוג המתאים לבעיה (DFA לביצועים, regex לתחביר)</li>
+                                <li><strong>יסוד לתורה:</strong> בסיס לתורת השפות הפורמליות והחישוביות</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>💻 יישומים מעשיים</h4>
+                            <ul>
+                                <li><strong>מעבדים (Compilers):</strong> ניתוח לקסיקלי - המרה מtokens לביטויים רגולריים</li>
+                                <li><strong>חיפוש טקסט:</strong> grep, sed, ביטויים רגולריים בשפות תכנות</li>
+                                <li><strong>בדיקת פרוטוקולים:</strong> אימות רצפי הודעות ברשתות</li>
+                                <li><strong>ביואינפורמטיקה:</strong> חיפוש דפוסים ברצפי DNA</li>
+                                <li><strong>אבטחת מידע:</strong> זיהוי דפוסים בלוגים ותנועת רשת</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>⚖️ הגבלות וגבולות</h4>
+                            <ul>
+                                <li><strong>אי-רגולריות:</strong> שפות כמו {aⁿbⁿ | n≥0} אינן רגולריות (Pumping Lemma)</li>
+                                <li><strong>מורכבות מצבים:</strong> המרה מregex ל-DFA יכולה להוביל להתפוצצות אקספוננציאלית</li>
+                                <li><strong>כוח ביטוי מוגבל:</strong> לא ניתן לתאר כל שפה חישובית באמצעות ביטויים רגולריים</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- דוגמה מלאה -->
+                    <div class="example-box">
+                        <h4>🎯 דוגמה מלאה: יישום המשפט</h4>
+                        <p><strong>בעיה:</strong> בנה ביטוי רגולרי לשפה "כל המילים שמכילות לפחות 'ab' אחת"</p>
+                        
+                        <p><strong>שלב 1 - בניית DFA:</strong></p>
+                        <ul>
+                            <li>מצבים: {q₀, q₁, q₂} כאשר q₂ מצב קבלה</li>
+                            <li>מעברים: q₀ --a--> q₁, q₁ --b--> q₂, ועוד...</li>
+                        </ul>
+                        
+                        <p><strong>שלב 2 - הסרת מצבים:</strong></p>
+                        <div class="formula">
+                            תוצאה: (a + b)*ab(a + b)*
+                        </div>
+                        
+                        <p><strong>אימות:</strong> הביטוי מתאר בדיוק מילים עם תת-מחרוזת 'ab'</p>
+                    </div>
+                </div></div>
+    
+        <!-- סיכום של בנייה -->
+        <div class="theorem-box">
+            <div class="theorem-title">⚡ סיכום בניית אוטומט מביטוי רגולרי</div>
+            <ul>
+                <li>Thompson’s Construction מאפשרת בנייה שיטתית של NFA עם ε-מעברים.</li>
+                <li>יש לטפל בפרטי ε-closure ו-subset construction לעבור ל-DFA.</li>
+                <li>המורכבות האפשרית (exponential) קיימת תיאורטית, אך בפועל מבנים פשוטים ודפוסים נפוצים מפחיתים את ההתפוצצות.</li>
+                <li>ניתן לשלב מינימיזציה (Myhill–Nerode) לאחר ההמרה ל-DFA כדי לצמצם מצבים מיותרים.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+     <div class="footer">
+            <h3>🌟 סיכום</h3>
+            <p>דף זה מסכם את עקרונות הביטויים הרגולריים, הסגירות, בניית האוטומט, זהויות ומשפט קליני.</p>
+        </div>
+    </div>
+</body>
+
+    <script>
+        function toggleSection(headerElement) {
+            const content = headerElement.nextElementSibling;
+            content.classList.toggle('active');
+        }
+    </script>
+
+            
+            

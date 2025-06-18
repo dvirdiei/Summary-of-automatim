@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שילוב של אוטומטים: אוטומט מכפלה ואוטומט חזקה</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .header {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: float 20s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .theorem-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-right: 5px solid #e91e63;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        .theorem-box:hover { transform: translateY(-5px); }
+        .theorem-title {
+            font-size: 1.8em;
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .section {
+            background: white;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        .section-header:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .section-content {
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section-content.active { display: block; }
+        .arrow { transition: transform 0.3s ease; }
+        .arrow.rotated { transform: rotate(180deg); }
+        .formula {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 15px 0;
+            direction: ltr;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-right: 4px solid #00bcd4;
+            position: relative;
+            overflow: hidden;
+        }
+        .contradiction {
+            background: linear-gradient(45deg, #fed7d7, #fbb6ce);
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 4px solid #e53e3e;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #fef5e7;
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid #f6ad55;
+            margin: 10px 0;
+        }
+        .visual-demo {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px dashed #667eea;
+        }
+        .string-visual {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8em;
+            text-align: center;
+            margin: 20px 0;
+            direction: ltr;
+        }
+        .part-x { color: #e53e3e; font-weight: bold; }
+        .part-y { color: #38a169; font-weight: bold; background: #c6f6d5; padding: 2px 6px; border-radius: 4px; }
+        .part-z { color: #3182ce; font-weight: bold; }
+        .interactive-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .interactive-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .pump-demo {
+            display: none;
+            background: #e6fffa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #38b2ac;
+            margin: 15px 0;
+        }
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        .representation-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .diagram-container, .table-container {
+            flex: 1 1 300px;
+            min-width: 280px;
+        }
+        .diagram-container svg {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            display: block;
+        }
+        .table-container table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+        }
+        .table-container th,
+        .table-container td {
+            border: 1px solid #444;
+            padding: 4px 8px;
+        }
+        /* כפתור חזרה לדף הבית */
+.home-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    font-family: inherit;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.home-button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .home-button {
+        top: 10px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">
+        🏠 דף הבית
+    </a>
+    <div class="container">
+        <div class="header">
+            <h1>שילוב של אוטומטים</h1>
+            <p>אוטומט מכפלה ואוטומט חזקה (Subset Construction)</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="theorem-box">
+                <div class="theorem-title">⚙️ מבוא לשילוב אוטומטים</div>
+                <p style="font-size:1.1em; line-height:1.5em; padding-right:20px;">
+                    שילוב אוטומטים נחלק לשני מנגנונים עיקריים:
+                    <strong>אוטומט מכפלה</strong> (Product Automaton) 
+                    המשמש לבנייה של אוטומט המקבל חיתוך או איחוד של שפות מזוג אוטומטים,
+                    ו<strong>אוטומט חזקה</strong> (Subset Construction) 
+                    המשמש להמרת NFA ל-DFA באמצעות התפלגות על קבוצת מצבים (power set).
+                </p>
+            </div>
+
+            <!-- אוטומט מכפלה -->
+<div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+        <span>🤝 אוטומט מכפלה</span>
+        <span class="arrow">▼</span>
+    </div>
+    <div class="section-content">
+        <p>ניתן להשתמש באוטומט מכפלה כדי לבנות אוטומט שמקבל את ה-<strong>חיתוך</strong> או <strong>איחוד</strong> של שתי שפות רגולריות. נניח שני DFA:</p>
+        <div class="formula">
+            A₁ = (Q₁, Σ, δ₁, q₀¹, F₁),<br>
+            A₂ = (Q₂, Σ, δ₂, q₀², F₂)
+        </div>
+
+        <div class="info-box">
+            <h4>🔍 אלגוריתם בניית אוטומט מכפלה:</h4>
+            <ol>
+                <li><strong>הגדרת קבוצת המצבים:</strong> יצירת מכפלה קרטזית Q₁ × Q₂</li>
+                <li><strong>קביעת הא״ב:</strong> שימוש באותו א״ב Σ של האוטומטים המקוריים</li>
+                <li><strong>בניית פונקציית המעברים:</strong> עבור כל מצב (q₁, q₂) וכל תו a, המעבר יהיה לזוג המצבים המתקבלים מהמעברים המקוריים</li>
+                <li><strong>קביעת מצב התחלתי:</strong> הזוג של מצבי ההתחלה המקוריים</li>
+                <li><strong>הגדרת מצבי קבלה:</strong> תלוי אם רוצים חיתוך או איחוד</li>
+            </ol>
+        </div>
+
+        <p>הגדרה של ה-Product Automaton לקבלת החיתוך L(A₁) ∩ L(A₂):</p>
+        <div class="formula">
+            Q = Q₁ × Q₂<br>
+            Σ זהה ל-Σ<br>
+            δ((q₁, q₂), a) = ( δ₁(q₁, a), δ₂(q₂, a) )<br>
+            q₀ = (q₀¹, q₀²)<br>
+            F = { (q₁, q₂) ∈ Q₁ × Q₂ | q₁ ∈ F₁ ו- q₂ ∈ F₂ }
+        </div>
+
+        <div class="info-box">
+            <h4>⚖️ ההבדל המהותי בין חיתוך לאיחוד:</h4>
+            <p><strong>עבור חיתוך (∩):</strong> מצב (q₁, q₂) הוא מצב מקבל אם ורק אם <strong>גם</strong> q₁ הוא מצב מקבל ב-A₁ <strong>וגם</strong> q₂ הוא מצב מקבל ב-A₂.</p>
+            <p><strong>עבור איחוד (∪):</strong> מצב (q₁, q₂) הוא מצב מקבל אם <strong>לפחות אחד</strong> מהמצבים q₁ או q₂ הוא מצב מקבל באוטומט המקורי שלו.</p>
+        </div>
+
+        <div class="highlight">
+            💡 אפשר לשנות F לקבלת איחוד: F = { (q₁, q₂) | q₁ ∈ F₁ או q₂ ∈ F₂ }.
+        </div>
+
+        <div class="info-box">
+            <h4>🧮 דוגמה:</h4>
+            <p>אם A₁ מקבל מילים המסתיימות ב-a ו-A₂ מקבל מילים באורך זוגי:</p>
+            <ul>
+                <li><strong>האוטומט חיתוך</strong> יקבל רק מילים שגם מסתיימות ב-a וגם באורך זוגי</li>
+                <li><strong>האוטומט איחוד</strong> יקבל מילים שמסתיימות ב-a או שהן באורך זוגי (או שניהם)</li>
+            </ul>
+            <p>מצב (q₁, q₂) באוטומט החיתוך יהיה מקבל רק אם q₁ מקבל ב-A₁ וגם q₂ מקבל ב-A₂.</p>
+            <p>באוטומט האיחוד, מספיק שאחד מהם יהיה מקבל כדי ש-(q₁, q₂) יהיה מקבל.</p>
+        </div>
+        <div class="visual-demo">
+                    <p>להלן דוגמה פשוטה:</p>
+                    <div class="example-box">
+                        <strong>דוגמה:</strong> 
+                        נניח שני DFA על האלפבית {a,b}:
+                        <ul style="direction: rtl; padding-right:20px;">
+                            <li>A: מקבל מחרוזות עם מספר זוגי של 'a'.</li>
+                            <li>B: מקבל מחרוזות עם מספר זוגי של 'b'.</li>
+                        </ul>
+                        <div class="representation-grid">
+                            <!-- אוטומט A: מספר זוגי של a -->
+                            <div class="diagram-container">
+                                <h3>אוטומט A: מספר זוגי של 'a'</h3>
+                                <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrowA" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                            <polygon points="0 0, 6 2, 0 4" fill="black" />
+                                        </marker>
+                                    </defs>
+                                    <circle cx="80" cy="75" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <circle cx="80" cy="75" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="80" y="75" font-size="16" text-anchor="middle" dominant-baseline="middle">A</text>
+                                    <circle cx="200" cy="75" r="30" stroke="black" stroke-width="2" fill="#ffcccc"/>
+                                    <text x="200" y="75" font-size="16" text-anchor="middle" dominant-baseline="middle">B</text>
+                                    <line x1="20" y1="75" x2="50" y2="75" stroke="black" stroke-width="1.5" marker-end="url(#arrowA)"/>
+                                    <text x="35" y="65" font-size="14">S</text>
+                                    <line x1="110" y1="75" x2="170" y2="75" stroke="black" stroke-width="1.5" marker-end="url(#arrowA)"/>
+                                    <text x="140" y="65" font-size="14">a</text>
+                                    <line x1="170" y1="95" x2="110" y2="95" stroke="black" stroke-width="1.5" marker-end="url(#arrowA)"/>
+                                    <text x="140" y="115" font-size="14">a</text>
+                                    <path d="M 65 50 C 50 35, 70 15, 80 45" stroke="black" fill="none" stroke-width="1.5" marker-end="url(#arrowA)"/>
+                                    <text x="65" y="20" font-size="14">b</text>
+                                    <path d="M 180 50 C 170 35, 190 15, 200 45" stroke="black" fill="none" stroke-width="1.5" marker-end="url(#arrowA)"/>
+                                    <text x="185" y="20" font-size="14">b</text>
+                                </svg>
+                            </div>
+                            <!-- אוטומט B: מספר זוגי של b -->
+                            <div class="diagram-container">
+                                <h3>אוטומט B: מספר זוגי של 'b'</h3>
+                                <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrowB" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                            <polygon points="0 0, 6 2, 0 4" fill="black" />
+                                        </marker>
+                                    </defs>
+                                    <circle cx="80" cy="75" r="30" stroke="black" stroke-width="2" fill="lightgreen"/>
+                                    <circle cx="80" cy="75" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="80" y="75" font-size="16" text-anchor="middle" dominant-baseline="middle">C</text>
+                                    <circle cx="200" cy="75" r="30" stroke="black" stroke-width="2" fill="#ffcccc"/>
+                                    <text x="200" y="75" font-size="16" text-anchor="middle" dominant-baseline="middle">D</text>
+                                    <line x1="20" y1="75" x2="50" y2="75" stroke="black" stroke-width="1.5" marker-end="url(#arrowB)"/>
+                                    <text x="35" y="65" font-size="14">S</text>
+                                    <line x1="110" y1="75" x2="170" y2="75" stroke="black" stroke-width="1.5" marker-end="url(#arrowB)"/>
+                                    <text x="140" y="65" font-size="14">b</text>
+                                    <line x1="170" y1="95" x2="110" y2="95" stroke="black" stroke-width="1.5" marker-end="url(#arrowB)"/>
+                                    <text x="140" y="115" font-size="14">b</text>
+                                    <path d="M 65 50 C 50 35, 70 15, 80 45" stroke="black" fill="none" stroke-width="1.5" marker-end="url(#arrowB)"/>
+                                    <text x="65" y="20" font-size="14" text-anchor="middle">a</text>
+                                    <path d="M 180 50 C 170 35, 190 15, 200 45" stroke="black" fill="none" stroke-width="1.5" marker-end="url(#arrowB)"/>
+                                    <text x="185" y="20" font-size="14" text-anchor="middle">a</text>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="representation-grid">
+                            <div class="diagram-container">
+                                <h4 style="text-align: center;">אוטומט חיתוך מכפלה</h4>
+                                <p style="text-align: center;">מספר זוגי של 'a' וגם מספר זוגי של 'b'</p>
+                                <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrow" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                            <polygon points="0 0, 6 2, 0 4" fill="black" />
+                                        </marker>
+                                    </defs>
+                                    <circle cx="120" cy="80" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <circle cx="120" cy="80" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="120" y="80" font-size="12" text-anchor="middle" dominant-baseline="middle">(A,C)</text>
+                                    <circle cx="360" cy="80" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <text x="360" y="80" font-size="12" text-anchor="middle" dominant-baseline="middle">(B,C)</text>
+                                    <circle cx="120" cy="200" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <text x="120" y="200" font-size="12" text-anchor="middle" dominant-baseline="middle">(D,A)</text>
+                                    <circle cx="360" cy="200" r="30" stroke="black" stroke-width="2" fill="#ffcccc"/>
+                                    <text x="360" y="200" font-size="12" text-anchor="middle" dominant-baseline="middle">(D,B)</text>
+                                    <line x1="20" y1="80" x2="90" y2="80" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="50" y="70" font-size="12">התחל</text>
+                                    <line x1="110" y1="110" x2="110" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="100" y="140" font-size="12">a</text>
+                                    <line x1="350" y1="110" x2="350" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="340" y="140" font-size="12">a</text>
+                                    <line x1="130" y1="170" x2="130" y2="110" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="140" y="140" font-size="12">a</text>
+                                    <line x1="370" y1="170" x2="370" y2="110" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="380" y="140" font-size="12">a</text>
+                                    <line x1="150" y1="80" x2="330" y2="80" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="70" font-size="12">b</text>
+                                    <line x1="330" y1="90" x2="150" y2="90" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="105" font-size="12">b</text>
+                                    <line x1="150" y1="200" x2="330" y2="200" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="190" font-size="12">b</text>
+                                    <line x1="330" y1="210" x2="150" y2="210" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="225" font-size="12">b</text>
+                                </svg>
+                            </div>
+                            <div class="diagram-container">
+                                <h4 style="text-align: center;">אוטומט איחוד מכפלה</h4>
+                                <p style="text-align: center;">מספר זוגי של 'a' או מספר זוגי של 'b'</p>
+                                <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrow" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                            <polygon points="0 0, 6 2, 0 4" fill="black" />
+                                        </marker>
+                                    </defs>
+                                    <circle cx="120" cy="80" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <circle cx="120" cy="80" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="120" y="80" font-size="12" text-anchor="middle" dominant-baseline="middle">(A,C)</text>
+                                    <circle cx="360" cy="80" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <circle cx="360" cy="80" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="360" y="80" font-size="12" text-anchor="middle" dominant-baseline="middle">(B,C)</text>
+                                    <circle cx="120" cy="200" r="30" stroke="black" stroke-width="2" fill="lightblue"/>
+                                    <circle cx="120" cy="200" r="26" stroke="black" stroke-width="1" fill="none"/>
+                                    <text x="120" y="200" font-size="12" text-anchor="middle" dominant-baseline="middle">(D,A)</text>
+                                    <circle cx="360" cy="200" r="30" stroke="black" stroke-width="2" fill="#ffcccc"/>
+                                    <text x="360" y="200" font-size="12" text-anchor="middle" dominant-baseline="middle">(D,B)</text>
+                                    <line x1="20" y1="80" x2="90" y2="80" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="50" y="70" font-size="12">התחל</text>
+                                    <line x1="110" y1="110" x2="110" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="100" y="140" font-size="12">a</text>
+                                    <line x1="350" y1="110" x2="350" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="340" y="140" font-size="12">a</text>
+                                    <line x1="130" y1="170" x2="130" y2="110" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="140" y="140" font-size="12">a</text>
+                                    <line x1="370" y1="170" x2="370" y2="110" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="380" y="140" font-size="12">a</text>
+                                    <line x1="150" y1="80" x2="330" y2="80" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="70" font-size="12">b</text>
+                                    <line x1="330" y1="90" x2="150" y2="90" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="105" font-size="12">b</text>
+                                    <line x1="150" y1="200" x2="330" y2="200" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="190" font-size="12">b</text>
+                                    <line x1="330" y1="210" x2="150" y2="210" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <text x="240" y="225" font-size="12">b</text>
+                                </svg>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- אוטומט חזקה (Subset Construction) -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔀 אוטומט חזקה (Subset Construction)</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p>Subset Construction (אוטומט חזקה) הוא מנגנון לבניית DFA שקולטת את אותה שפה כמו NFA נתון. נשתמש ב-Σ זהה ונגדיר קבוצת מצבים שהיא <strong>קבוצת החזקה</strong> (Power Set) של מצביי ה-NFA.</p>
+                    <div class="formula">
+                        NFA = (Q, Σ, δ, q₀, F)<br>
+                        DFA' = (Q' = 2^Q, Σ, δ', q'₀, F')<br>
+                        q'₀ = ε-closure(q₀)<br>
+                        δ'(S, a) = ε-closure(⋃_{q ∈ S} δ(q, a))<br>
+                        F' = { S ⊆ Q | S ∩ F ≠ ∅ }
+                    </div>
+                    <p>כלומר, כל מצב ב-DFA' הוא קבוצה של מצבים ב-NFA המקורית. מצב התחלתי הוא ε-closure(q₀). מצב מקבל הוא קבוצה המכילה לפחות מצב מקבל אחד של ה-NFA.</p>
+
+                    <!-- הוספת הסבר אלגוריתם Subset Construction -->
+<div class="example-box">
+    <strong>🎯 איך בונים DFA מ-NFA - הסבר פשוט לכיתה א'</strong>
+    
+    <div style="background: #e6f3ff; padding: 15px; border-radius: 8px; margin: 10px 0;"></div>
+        <h4>💡 הרעיון הבסיסי:</h4>
+        <p style="font-size: 1.2em;"></p>
+            NFA יכול להיות בכמה מצבים בו-זמנית. DFA חייב להיות במצב אחד בלבד.
+            <br><strong>הפתרון:</strong> כל מצב ב-DFA יייצג קבוצה של מצבים מה-NFA!
+        </p>
+    </div>
+
+    <h4>🔧 השלבים (בלי מילים מסובכות):</h4>
+    <ol style="direction: rtl; padding-right:20px; font-size:1.1em; line-height: 1.8;">
+        <li>
+            <strong>מתחילים:</strong> 
+            <br>מצב ההתחלה של ה-DFA החדש הוא הקבוצה שמכילה רק את מצב ההתחלה של ה-NFA.
+            <br>דוגמה: אם ב-NFA התחלנו במצב q₀, אז ב-DFA נתחיל במצב {q₀}
+        </li>
+        
+        <li>
+            <strong>בונים מצבים חדשים:</strong>
+            <br>לכל מצב (=קבוצה) שיש לנו, ולכל אות באלפבית:
+            <ul style="margin-top: 10px;">
+                <li>שואלים: "איפה אני יכול להגיע מכל המצבים בקבוצה הזו עם האות הזו?"</li>
+                <li>לוקחים את כל התשובות ועושים מהן קבוצה חדשה</li>
+                <li>הקבוצה החדשה הזו תהיה מצב חדש ב-DFA</li>
+            </ul>
+        </li>
+        
+        <li>
+            <strong>חוזרים על השלב הקודם:</strong>
+            <br>עושים את זה לכל מצב חדש שיצרנו, עד שלא נוצרים יותר מצבים חדשים
+        </li>
+        
+        <li>
+            <strong>מחליטים איזה מצבים מקבלים:</strong>
+            <br>מצב ב-DFA יהיה מקבל אם הקבוצה שלו מכילה לפחות מצב מקבל אחד מה-NFA
+        </li>
+    </ol>
+
+    
+
+    <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin: 15px 0; border-right: 4px solid #bee5eb;">
+        <h4>🤔 למה זה עובד?</h4>
+        <p>
+            כשאני קורא מילה ב-NFA, אני עוקב אחרי כל המסלולים האפשריים.
+            <br>כשאני קורא את אותה מילה ב-DFA החדש, אני עוקב אחרי קבוצת המצבים - 
+            בדיוק אותם מצבים שהייתי מגיע אליהם ב-NFA!
+        </p>
+    </div>
+
+<!-- גרפים מתוקנים: NFA עם 3 מצבים + DFA נגזר עם Subset Construction -->
+<div class="example-box">
+    <strong>דוגמה ממשית ל-Subset Construction:</strong>
+    <p style="direction: rtl; padding-right:20px;">
+        דוגמה והסבר יותר מעמיק. אם ממש לא מבינים, מומלץ לצפות בסרטון הבא:
+    </p>
+    <a href="https://www.youtube.com/watch?v=cKe6jAN75CI" target="_blank" style="color: #007bff; text-decoration: underline;">
+        המרה מאסל"ד לאסד (אוטמט חזקה)
+    </a>
+</div>
+
+<div class="representation-grid">
+    <!-- NFA מתוקן: q0, q1, q2 -->
+    <div class="diagram-container">
+        <h3>אסל"ד טיפוסי</h3>
+        <svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            
+  <!-- מצב q0 (כחול בהיר) -->
+  <ellipse stroke="black" stroke-width="1" fill="#d0f0ff" cx="348.5" cy="152.5" rx="30" ry="30"/>
+  <text x="340.5" y="158.5" font-family="Times New Roman" font-size="20">q₀</text>
+
+  <!-- מצב q1 (ירוק בהיר, כולל טבעת פנימית כסימן למצב סופי) -->
+  <ellipse stroke="black" stroke-width="1" fill="#d0ffd0" cx="269.5" cy="264.5" rx="30" ry="30"/>
+  <ellipse stroke="black" stroke-width="1" fill="none" cx="269.5" cy="264.5" rx="24" ry="24"/>
+  <text x="261.5" y="270.5" font-family="Times New Roman" font-size="20">q₁</text>
+
+  <!-- מצב q2 (צהוב בהיר) -->
+  <ellipse stroke="black" stroke-width="1" fill="#fff0b3" cx="427.5" cy="264.5" rx="30" ry="30"/>
+  <text x="419.5" y="270.5" font-family="Times New Roman" font-size="20">q₂</text>
+
+  <!-- חץ התחלה -->
+  <polygon stroke="black" stroke-width="1" points="277.5,99.5 324.459,134.554"/>
+  <text x="265.5" y="91.5" font-family="Times New Roman" font-size="20">s</text>
+  <polygon fill="black" stroke-width="1" points="324.459,134.554 321.04,125.762 315.058,133.775"/>
+
+  <!-- לולאה על q0 -->
+  <path stroke="black" stroke-width="1" fill="none" d="M 352.669,122.909 A 22.5,22.5 0 1 1 374.523,137.81"/>
+  <text x="391.5" y="87.5" font-family="Times New Roman" font-size="20">b</text>
+  <polygon fill="black" stroke-width="1" points="374.523,137.81 383.74,139.818 380.367,130.404"/>
+
+  <!-- q0 → q1 -->
+  <polygon stroke="black" stroke-width="1" points="331.208,177.015 286.792,239.985"/>
+  <polygon fill="black" stroke-width="1" points="286.792,239.985 295.489,236.33 287.317,230.566"/>
+  <text x="294.5" y="200.5" font-family="Times New Roman" font-size="20">a</text>
+
+  <!-- q1 → q2 -->
+  <polygon stroke="black" stroke-width="1" points="299.5,264.5 397.5,264.5"/>
+  <polygon fill="black" stroke-width="1" points="397.5,264.5 389.5,259.5 389.5,269.5"/>
+  <text x="344.5" y="285.5" font-family="Times New Roman" font-size="20">a</text>
+
+  <!-- q2 → q0 -->
+  <path stroke="black" stroke-width="1" fill="none" d="M 401.707,249.301 A 134.25,134.25 0 0 1 354.164,181.897"/>
+  <polygon fill="black" stroke-width="1" points="401.707,249.301 398.314,240.499 392.308,248.494"/>
+  <text x="357.5" y="239.5" font-family="Times New Roman" font-size="20">b</text>
+
+  <!-- q0 → q2 -->
+  <path stroke="black" stroke-width="1" fill="none" d="M 376.884,161.831 A 95.985,95.985 0 0 1 428.233,234.631"/>
+  <polygon fill="black" stroke-width="1" points="376.884,161.831 381.72,169.931 386.284,161.033"/>
+  <text x="417.5" y="184.5" font-family="Times New Roman" font-size="20">a</text>
+
+  <!-- לולאה על q2 -->
+  <path stroke="black" stroke-width="1" fill="none" d="M 452.627,280.674 A 22.5,22.5 0 1 1 429.947,294.283"/>
+  <text x="467.5" y="343.5" font-family="Times New Roman" font-size="20">a,b</text>
+  <polygon fill="black" stroke-width="1" points="429.947,294.283 424.264,301.813 434.225,302.691"/>
+</svg>
+
+       
+    </div>
+
+    <!-- DFA הנגזר מתוקן -->
+    <div class="diagram-container">
+        <h3>אס"ד (DFA) הנגזר</h3>
+        <?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="600" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<!-- q₀ -->
+	<ellipse stroke="black" stroke-width="1" fill="#d0e9ff" cx="184.5" cy="84.5" rx="30" ry="30"/>
+	<text x="176.5" y="90.5" font-family="Times New Roman" font-size="20">q₀</text>
+
+	<!-- q₁ (final) -->
+	<ellipse stroke="black" stroke-width="1" fill="#d0ffd0" cx="101.5" cy="242.5" rx="30" ry="30"/>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="101.5" cy="242.5" rx="24" ry="24"/>
+	<text x="93.5" y="248.5" font-family="Times New Roman" font-size="20">q₁</text>
+
+	<!-- q₂ -->
+	<ellipse stroke="black" stroke-width="1" fill="#fff0b3" cx="184.5" cy="376.5" rx="30" ry="30"/>
+	<text x="176.5" y="382.5" font-family="Times New Roman" font-size="20">q₂</text>
+
+	<!-- X (reject) -->
+	<ellipse stroke="black" stroke-width="1" fill="#e0e0e0" cx="79.5" cy="376.5" rx="30" ry="30"/>
+	<text x="73.5" y="382.5" font-family="Times New Roman" font-size="20">X</text>
+
+	<!-- q₀,q₁ (subset, non-final) -->
+	<ellipse stroke="black" stroke-width="1" fill="#fffac0" cx="321.5" cy="72.5" rx="30" ry="30"/>
+	<text x="350" y="78.5" font-family="Times New Roman" font-size="20">q₀,q₁</text>
+	<!-- inner ellipse קיימת אך בלי fill -->
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="321.5" cy="72.5" rx="24" ry="24"/>
+
+	<!-- q₀,q₂ (subset, non-final) -->
+	<ellipse stroke="black" stroke-width="1" fill="#fffac0" cx="273.5" cy="242.5" rx="30" ry="30"/>
+	<text x="290" y="248.5" font-family="Times New Roman" font-size="20">q₀,q₂</text>
+
+	<!-- q₁,q₂ (subset, non-final) -->
+	<ellipse stroke="black" stroke-width="1" fill="#fffac0" cx="428.5" cy="226.5" rx="30" ry="30"/>
+	<text x="445" y="232.5" font-family="Times New Roman" font-size="20">q₁,q₂</text>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="428.5" cy="226.5" rx="24" ry="24"/>
+
+	<!-- q₀,q₁,q₂ (subset, final) -->
+	<ellipse stroke="black" stroke-width="1" fill="#ffd8a8" cx="421.5" cy="382.5" rx="30" ry="30"/>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="421.5" cy="382.5" rx="24" ry="24"/>
+	<text x="450" y="388.5" font-family="Times New Roman" font-size="20">q₀,q₁,q₂</text>
+
+	<!-- שאר הקווים והחצים מיועדים כפי שהיו במקור -->
+	<polygon stroke="black" stroke-width="1" points="170.548,111.058 115.452,215.942"/>
+	<polygon fill="black" stroke-width="1" points="115.452,215.942 123.598,211.185 114.746,206.534"/>
+	<text x="127.5" y="157.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<polygon stroke="black" stroke-width="1" points="199.224,110.638 258.776,216.362"/>
+	<polygon fill="black" stroke-width="1" points="258.776,216.362 259.207,206.937 250.494,211.845"/>
+	<text x="235.5" y="157.5" font-family="Times New Roman" font-size="20">b</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 249.025,259.646 A 22.5,22.5 0 1 1 245.004,233.503"/>
+	<text x="190.5" y="260.5" font-family="Times New Roman" font-size="20">b</text>
+	<polygon fill="black" stroke-width="1" points="245.004,233.503 240.181,225.395 235.602,234.285"/>
+
+	<polygon stroke="black" stroke-width="1" points="96.64,272.104 84.36,346.896"/>
+	<polygon fill="black" stroke-width="1" points="84.36,346.896 90.59,339.812 80.722,338.192"/>
+	<text x="73.5" y="313.5" font-family="Times New Roman" font-size="20">b</text>
+
+	<polygon stroke="black" stroke-width="1" points="110.5,55.5 156.568,73.554"/>
+	<text x="96.5" y="52.5" font-family="Times New Roman" font-size="20">s</text>
+	<polygon fill="black" stroke-width="1" points="156.568,73.554 150.944,65.98 147.295,75.29"/>
+
+	<polygon stroke="black" stroke-width="1" points="117.297,268.004 168.703,350.996"/>
+	<polygon fill="black" stroke-width="1" points="168.703,350.996 168.741,341.562 160.24,346.828"/>
+	<text x="149.5" y="302.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 189.356,405.986 A 22.5,22.5 0 1 1 164.05,398.29"/>
+	<text x="151.5" y="462.5" font-family="Times New Roman" font-size="20">b</text>
+	<polygon fill="black" stroke-width="1" points="164.05,398.29 154.653,399.125 160.683,407.102"/>
+
+	<polygon stroke="black" stroke-width="1" points="313.348,101.371 281.652,213.629"/>
+	<polygon fill="black" stroke-width="1" points="281.652,213.629 288.638,207.288 279.014,204.571"/>
+	<text x="280.5" y="157.5" font-family="Times New Roman" font-size="20">b</text>
+
+	<polygon stroke="black" stroke-width="1" points="338.618,97.137 411.382,201.863"/>
+	<polygon fill="black" stroke-width="1" points="411.382,201.863 410.924,192.44 402.711,198.146"/>
+	<text x="380.5" y="141.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<polygon stroke="black" stroke-width="1" points="398.659,229.58 303.341,239.42"/>
+	<polygon fill="black" stroke-width="1" points="303.341,239.42 311.813,243.572 310.786,233.625"/>
+	<text x="345.5" y="224.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 302.076,251.543 A 203.246,203.246 0 0 1 410.885,354.47"/>
+	<polygon fill="black" stroke-width="1" points="302.076,251.543 307.649,259.155 311.361,249.869"/>
+	<text x="371.5" y="283.5" font-family="Times New Roman" font-size="20">b</text>
+
+	<polygon stroke="black" stroke-width="1" points="201.098,351.51 256.902,267.49"/>
+	<polygon fill="black" stroke-width="1" points="256.902,267.49 248.311,271.388 256.641,276.921"/>
+	<text x="235.5" y="328.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 448.757,248.56 A 149.537,149.537 0 1 1 195.039,404.534"/>
+	<polygon fill="black" stroke-width="1" points="195.039,404.534 194.109,413.922 203.07,409.484"/>
+	<text x="412.5" y="486.5" font-family="Times New Roman" font-size="20">b</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 410.568,410.312 A 22.5,22.5 0 1 1 392.776,390.74"/>
+	<text x="357.5" y="448.5" font-family="Times New Roman" font-size="20">a</text>
+	<polygon fill="black" stroke-width="1" points="392.776,390.74 384.277,386.644 385.37,396.584"/>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 394.388,369.689 A 282.139,282.139 0 0 1 287.796,268.859"/>
+	<polygon fill="black" stroke-width="1" points="394.388,369.689 389.72,361.491 384.974,370.293"/>
+	<text x="320.5" y="347.5" font-family="Times New Roman" font-size="20">a</text>
+
+	<path stroke="black" stroke-width="1" fill="none" d="M 89.035,404.821 A 22.5,22.5 0 1 1 62.821,401.295"/>
+	<text x="54.5" y="465.5" font-family="Times New Roman" font-size="20">a,b</text>
+	<polygon fill="black" stroke-width="1" points="62.821,401.295 53.68,403.631 60.915,410.534"/>
+</svg>
+
+
+        <p style="font-size:0.9em; margin-top:8px; text-align:center; direction: rtl;">
+  <strong>הסבר DFA מתוקן:</strong>
+  <ul style="display: inline-block; text-align: right; padding-right: 0; margin: 8px 0;">
+    <li><strong>קבוצה א (q₀):</strong> מצב התחלתי.  
+      <ul style="direction: rtl; text-align: right; margin-top:4px;">
+        <li>על ‘a’ → q₁ (קבוצה ב).</li>
+        <li>על ‘b’ → q₀ (קבוצה א).</li>
+      </ul>
+    </li>
+    <li><strong>קבוצה ב (q₁):</strong> מצב מקבל.  
+      <ul style="direction: rtl; text-align: right; margin-top:4px;">
+        <li>על ‘a’ → q₂ (קבוצה ג).</li>
+        <li>על ‘b’ → X (קבוצה ד – מצב דחייה).</li>
+      </ul>
+    </li>
+    <li><strong>קבוצה ג (q₂):</strong> מצב ביניים.  
+      <ul style="direction: rtl; text-align: right; margin-top:4px;">
+        <li>על ‘a’ → q₂ (קבוצה ג).</li>
+        <li>על ‘b’ → q₀ (קבוצה א).</li>
+      </ul>
+    </li>
+    <li><strong>קבוצה ד (X):</strong> מצב דחייה (sink).  
+      <ul style="direction: rtl; text-align: right; margin-top:4px;">
+        <li>על ‘a’ → X (קבוצה ד).</li>
+        <li>על ‘b’ → X (קבוצה ד).</li>
+      </ul>
+    </li>
+  </ul>
+  <strong>מצבי קבלה:</strong> קבוצה ב בלבד (q₁).  
+</p>
+    </div>
+</div>
+
+<div class="example-box" style="direction: rtl; text-align: right;">
+  <strong>הסבר יותר מעמיק </strong>
+  <ol style="padding-right:20px; font-size:1.1em;">
+    <li>
+      <strong>הכנת המידע הבסיסי:</strong>
+      <ul style="margin-top:4px;">
+        <li>קבוצת המצבים של ה-NFA (Q), האלפבית (Σ), פונקציית המעבר δ, מצב התחלתי q₀, וקבוצת מצבי הקבלה F.</li>
+        <li>אם יש ε-מעברים (NFA-ε), ודא שאתה יודע לחשב ε-closure של כל מצב:  
+          ε-closure(q) = כל המצבים שניתן להגיע אליהם מ-q בעזרת רצף של ε בלבד.
+        </li>
+      </ul>
+    </li>
+    <li>
+      <strong>הגדרת המצבים של ה-DFA (תתי-קבוצות):</strong>
+      <ul style="margin-top:4px;">
+        <li>כל מצב ב-DFA ייצג תת-קבוצה של Q (ה-‘power set’ של Q).</li>
+        <li>קבוצה ריקה ∅ יכולה להופיע אם אין מעבר עבור סמל מסוים.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>מצב התחלתי של ה-DFA:</strong>
+      <ul style="margin-top:4px;">
+        <li>אם אין ε-מעברים: המצב ההתחלתי הוא {q₀}.</li>
+        <li>אם יש ε-מעברים: חשב ε-closure({q₀}) → זה המצב ההתחלתי.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>לוח זמנים (בתור) לטיפול בתתי-קבוצות חדשות:</strong>
+      <ul style="margin-top:4px;">
+        <li>פתח תור (queue) או רשימה לטיפול בתתי-קבוצות שטרם נבדקו.</li>
+        <li>הכנס את המצב ההתחלתי לתור, וסמן אותו כבטיפול.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>לולאת עיבוד:</strong>
+      <ul style="margin-top:4px;">
+        <li>כל עוד קיימת תת-קבוצה S בתור שטרם טופלה:</li>
+        <ol style="direction: rtl; padding-right:20px; margin-top:4px;">
+          <li>הוצא S מהתור.</li>
+          <li>עבור כל סמל a ב-Σ:</li>
+          <ul style="margin-top:4px;">
+            <li>חשב את הקבוצה הבאה T_raw = ∪_{q ∈ S} δ(q, a).  
+              אם יש ε-מעברים: לאחר מכן חשב T = ε-closure(T_raw). אחרת: T = T_raw.</li>
+            <li>אם T אינה מופיעה עדיין כרשומה של מצב ב-DFA:  
+              • הוסף T כמצב חדש, והכנס לתור כדי לעבדה מאוחר יותר.  
+            </li>
+            <li>הגדר במפת המעברים של ה-DFA: δ_DFA(S, a) = T.</li>
+          </ul>
+        </li>
+        <li>סמן S כמעובדת.</li>
+        </ol>
+      </ul>
+    </li>
+    <li>
+      <strong>קביעת מצבי קבלה ב-DFA:</strong>
+      <ul style="margin-top:4px;">
+        <li>כל תת-קבוצה S ב-DFA שבה S ∩ F ≠ ∅ תסומן כמצב מקבל.</li>
+        <li>תתי-קבוצות שלא מכילות אף מצב מקבל של ה-NFA הן לא-מקבלות (אך עדיין מצבים ב-DFA, כולל אפשרות של sink ∅).</li>
+      </ul>
+    </li>
+    <li>
+      <strong>תיאור פורמלי (pseudocode קצר):</strong>
+      <pre style="background:#f0f0f0; padding:8px; overflow-x:auto;">
+init:
+  אם יש ε: start = ε-closure({q₀})
+  אחרת: start = {q₀}
+  queue = [start]
+  DFA_states = { start }
+  transitions = {}
+
+while queue not empty:
+  S = queue.pop()
+  for each a in Σ:
+    T_raw = ∪_{q in S} δ(q, a)
+    if יש ε: T = ε-closure(T_raw) else: T = T_raw
+    transitions[(S, a)] = T
+    if T not in DFA_states:
+      DFA_states.add(T)
+      queue.push(T)
+
+final_states = { S in DFA_states | S ∩ F ≠ ∅ }
+      </pre>
+    </li>
+    <li>
+      <strong>שמות וייצוג של תתי-קבוצות:</strong>
+      <ul style="margin-top:4px;">
+        <li>בצייר SVG או בדיאגרמה, השתמש בשם ברור כמו “{q₀,q₂}”.</li>
+        <li>בעת מימוש בקוד: ניתן לייצג כל תת-קבוצה כ־bitmask, רשימה או מחרוזת ממוינת.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>טיפים לפרקטיקה וציור:</strong>
+      <ul style="margin-top:4px;">
+        <li>התחל עם מיקום המצבים בצורה מסודרת: חשב את גודל הקבוצה וכמות המעברים כדי למקם באופן קריא.</li>
+        <li>סמן היטב מצב התחלתי (חץ חיצוני) ומצבי קבלה (טבעת כפולה).</li>
+        <li>אם האלפבית גדול, אל תצייר ידנית עבור כל סמל—עדיף להיעזר בסקריפט שמייצר SVG אוטומטית.</li>
+        <li>זכור שהמספר תתי-הקבוצות עלול להיות גדול (במקרה הגרוע 2^{|Q|}). שקול בקבוצות גדולות להשתמש במינימיזציה או בגישות אחרות.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>מינימיזציה בסוף (אופציונלי):</strong>
+      <ul style="margin-top:4px;">
+        <li>לאחר ש-DFA נבנה, ניתן להריץ אלגוריתם למינימיזציה כדי לצמצם מצבים בלתי נגישים או שקולים.</li>
+        <li>בהרצת מינימיזציה, מצב sink (∅) יטופל כמצב יחיד.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>סיכום עקרוני:</strong>
+      <ul style="margin-top:4px;">
+        <li>Subset Construction יוצר DFA שבו כל מצב מייצג קבוצה של מצבי NFA אפשריים בזמן ריצה.</li>
+        <li>חשוב להבין: כל מעבר ב-DFA נובע מכללים שצריכים לאפשר קבלת כל הנתיבים האפשריים ב-NFA במקביל.</li>
+      </ul>
+    </li>
+  </ol>
+</div>
+
+</div>
+
+
+
+    <script>
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.arrow');
+            const isActive = content.classList.toggle('active');
+            arrow.classList.toggle('rotated', isActive);
+            if (isActive) {
+                content.style.display = 'block';
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                content.style.maxHeight = 0;
+                setTimeout(() => { content.style.display = 'none'; }, 300);
+            }
+        }
+
+        // Progress bar animation
+        const progressBar = document.getElementById('progressBar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.style.width = progress + '%';
+            if (progress === 100) {
+                clearInterval(interval);
+            }
+        }, 30);
+    </script>
+</body>
+</html>

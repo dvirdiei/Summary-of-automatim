@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיידעון: משפט נרוד</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* כפתור חזרה לדף הבית */
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: inherit;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .home-button {
+                top: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .theorem-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid #e91e63;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .theorem-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .theorem-title {
+            font-size: 1.8em;
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .section {
+            background: white;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        .section-content {
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #00bcd4;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .example-box::before {
+            content: '💡';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5em;
+        }
+        
+        .method-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #ffcccc 0%, #ff9999 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+            position: relative;
+        }
+        
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .tip-box {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4caf50;
+            position: relative;
+        }
+        
+        .tip-box::before {
+            content: '✨';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 15px 0;
+            direction: ltr;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            counter-increment: step-counter;
+            background: white;
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            border-color: #2196f3;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
+        }
+        
+        .language-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .language-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+            transition: transform 0.3s ease;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .language-card.regular {
+            border-top-color: #4caf50;
+        }
+        
+        .language-card.non-regular {
+            border-top-color: #f44336;
+        }
+        
+        .language-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .regular .language-title {
+            color: #4caf50;
+        }
+        
+        .non-regular .language-title {
+            color: #f44336;
+        }
+        
+        .interactive-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .demo-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .demo-result {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 1.1em;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: right;
+            direction: rtl;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .footer p {
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .language-examples {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">
+        🏠 דף הבית
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎯 משפט נרוד</h1>
+            <p>המדריך המלא לאפיון אלגברי של שפות רגולריות</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="theorem-box">
+                <div class="theorem-title">⚡ משפט נרוד - תמצית הרעיון</div>
+                <p><strong>שפה L היא רגולרית אם ורק אם</strong> מספר מחלקות השקילות של יחס $R_L$ הוא סופי. </p>
+                <div class="formula">
+                    L רגולרית ⇔ index(R<sub>L</sub>) &lt; ∞
+                </div>
+                <p style="text-align: center; margin-top: 15px; font-style: italic;">
+                    יחס R<sub>L</sub> מוגדר כך: שתי מילים x ו-y הן שקולות אם לכל סיומת (סייפא) z, שתי המילים החדשות xz ו-yz שתיהן בשפה L או שתיהן מחוץ לשפה L. 
+                </p>
+            </div>
+            
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🏗️ הוכחה ששפה היא רגולרית</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="method-box">
+                        <h3>🎯 האסטרטגיה</h3>
+                        <p>כדי להוכיח ששפה L היא רגולרית באמצעות משפט נרוד, עלינו להראות שיחס $R_L$ מחלק את כל המילים האפשריות (Σ*) למספר <strong>סופי</strong> של קבוצות (מחלקות שקילות).  אם נצליח, השפה רגולרית.</p>
+                    </div>
+                    
+                    <div class="language-examples">
+                        <div class="language-card regular">
+                            <div class="language-title">דוגמה: L = {a, aa, aaa} </div>
+                            <p><strong>ניתוח:</strong> זוהי שפה סופית. נחלק את כל המילים בעולם לקבוצות לפי "העתיד" שלהן ביחס לשפה:</p>
+                            <ul>
+                                <li><strong>קבוצה 1: {ε}</strong> - אם נוסיף לה 'a', נגיע למילה בשפה.</li>
+                                <li><strong>קבוצה 2: {a}</strong> - המילה עצמה בשפה. אם נוסיף 'a', נגיע ל-'aa' שגם בשפה.</li>
+                                <li><strong>קבוצה 3: {aa}</strong> - המילה עצמה בשפה. אם נוסיף 'a', נגיע ל-'aaa' שגם בשפה.</li>
+                                <li><strong>קבוצה 4: {aaa}</strong> - המילה עצמה בשפה. כל תוספת תוציא אותנו מהשפה.</li>
+                                <li><strong>קבוצה 5: כל שאר המילים</strong> - כל מילה שכבר לא יכולה להגיע למילה בשפה (למשל 'b', 'aaaa'). כל תוספת תשאיר אותן בחוץ. </li>
+                            </ul>
+                            <div class="formula">index(R<sub>L</sub>) = 5 &lt; ∞ ⟹ רגולרית!</div>
+                        </div>
+                        
+                        <div class="language-card regular">
+                            <div class="language-title">דוגמה: L = {x | אורך x זוגי} </div>
+                            <p><strong>ניתוח:</strong> כאן, "העתיד" של מילה תלוי רק בזוגיות אורכה. כל מה שחשוב לזכור הוא האם עד כה ראינו מספר זוגי או אי-זוגי של אותיות.</p>
+                            <ul>
+                                <li><strong>קבוצה 1: מילים באורך זוגי</strong> - מילים אלו נמצאות בשפה. אם נוסיף להן אות אחת, הן יעברו לקבוצה השנייה. </li>
+                                <li><strong>קבוצה 2: מילים באורך אי-זוגי</strong> - מילים אלו אינן בשפה. אם נוסיף להן אות אחת, הן יחזרו לקבוצה הראשונה. </li>
+                            </ul>
+                            <p>לא משנה כמה ארוכה המילה, היא תמיד תיפול לאחת משתי הקבוצות האלו.</p>
+                            <div class="formula">index(R<sub>L</sub>) = 2 &lt; ∞ ⟹ רגולרית!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🚫 הפרכת רגולריות של שפה</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="method-box">
+                        <h3>🔥 שיטת ההפרכה</h3>
+                        <p>כדי להוכיח ששפה <strong>אינה</strong> רגולרית, עלינו להראות שיש לה מספר <strong>אינסופי</strong> של מחלקות שקילות.  נעשה זאת בשלבים:</p>
+                        <div class="steps">
+                            <div class="step">
+                                <h4>מציאת משפחה אינסופית</h4>
+                                <p>נמצא קבוצה אינסופית של מילים, למשל {w₁, w₂, w₃, ...}, שאנו חושדים שכל אחת מהן מתנהגת אחרת.</p>
+                            </div>
+                            
+                            <div class="step">
+                                <h4>הוכחת הפרדה</h4>
+                                <p>נוכיח שעבור <strong>כל זוג</strong> מילים שונות מהקבוצה, wᵢ ו-wⱼ, קיימת סיומת 'z' (נקראת "סייפא מפרידה") כך שהוספתה למילים תוביל לתוצאה שונה: אחת תהיה בשפה והשנייה לא. </p>
+                                <div class="formula">w<sub>i</sub>z &isin; L   אבל   w<sub>j</sub>z &notin; L</div>
+                            </div>
+                            
+                            <div class="step">
+                                <h4>מסקנה</h4>
+                                <p>אם כל מילה במשפחה האינסופית ניתנת להפרדה מכל מילה אחרת, אז כל אחת מהן חייבת להיות במחלקת שקילות נפרדת. מכאן שיש אינסוף מחלקות, והשפה אינה רגולרית! </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="language-examples">
+                        <div class="language-card non-regular">
+                            <div class="language-title">דוגמה: L = {a<sup>n</sup>b<sup>n</sup> | n ≥ 0}</div>
+                            <p>שפה זו דורשת "לזכור" את מספר ה-a-ים כדי להתאים לו מספר זהה של b-ים. זהו רמז לאי-רגולריות.</p>
+                            <p><strong>משפחה אינסופית:</strong> S = {a<sup>0</sup>, a<sup>1</sup>, a<sup>2</sup>, a<sup>3</sup>, ...}</p>
+                            <p><strong>הפרדה:</strong> ניקח שתי מילים שונות מהמשפחה, x = a<sup>i</sup> ו-y = a<sup>j</sup> (כאשר i &ne; j). נבחר <strong>סייפא מפרידה</strong> z = b<sup>i</sup>.</p>
+                            <ul>
+                                <li><strong>בדיקה עבור x:</strong> xz = a<sup>i</sup>b<sup>i</sup>. מילה זו שייכת ל-L. ✓</li>
+                                <li><strong>בדיקה עבור y:</strong> yz = a<sup>j</sup>b<sup>i</sup>. מכיוון ש-j &ne; i, מילה זו אינה שייכת ל-L. ✗</li>
+                            </ul>
+                            <p>הצלחנו להפריד ביניהן. כיוון שניתן לעשות זאת לכל זוג, יש אינסוף מחלקות.</p>
+                            <div class="formula">index(R<sub>L</sub>) = &infin; ⟹ לא רגולרית!</div>
+                        </div>
+                        
+                        <div class="language-card non-regular">
+                            <div class="language-title">דוגמה: L = {x | #<sub>a</sub>(x) = #<sub>b</sub>(x)} </div>
+                            <p>שפה זו דורשת "מונה" שיכול לגדול ללא הגבלה.</p>
+                            <p><strong>משפחה אינסופית:</strong> S = {a<sup>0</sup>, a<sup>1</sup>, a<sup>2</sup>, a<sup>3</sup>, ...}</p>
+                            <p><strong>הפרדה:</strong> ניקח x = a<sup>i</sup> ו-y = a<sup>j</sup> (כאשר i ≠ j). ההבדל בין ספירת ה-a-ים וה-b-ים ב-x הוא i, וב-y הוא j.  כדי להבחין ביניהם, נבחר סייפא z = b<sup>i</sup>.</p>
+                             <ul>
+                                <li><strong>בדיקה עבור x:</strong> xz = a<sup>i</sup>b<sup>i</sup>. כאן #ₐ(xz) = #ᵦ(xz), ולכן המילה שייכת ל-L. ✓</li>
+                                <li><strong>בדיקה עבור y:</strong> yz = a<sup>j</sup>b<sup>i</sup>. כאן #ₐ(yz) ≠ #ᵦ(yz), ולכן המילה אינה שייכת ל-L. ✗ </li>
+                            </ul>
+                            <p>שוב, מצאנו אינסוף מחלקות שקילות.</p>
+                            <div class="formula">index(R<sub>L</sub>) = &infin; ⟹ לא רגולרית!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>💡 טיפים וטריקים</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="tip-box">
+                        <h3>🎯 איך למצוא משפחה מפרידה?</h3>
+                        <p>חפשו את "נקודת התורפה" של השפה – מה היא דורשת "לזכור" באופן אינסופי?</p>
+                        <ul>
+                            <li><strong>ספירה והשוואה:</strong> כמו ב-aⁿbⁿ, השפה דורשת לספור a-ים ולהשוות ל-b-ים. קחו את `aⁿ` כמשפחה מפרידה.</li>
+                            <li><strong>מבנים מתמטיים:</strong> בשפות כמו a<sup>n²</sup>, השפה דורשת לבדוק תכונה מתמטית (האם האורך הוא ריבוע מושלם?). קחו את `a<sup>n²</sup>` כמשפחה מפרידה.</li>
+                            <li><strong>שכפול:</strong> בשפות כמו `ww`, השפה דורשת לזכור חצי מילה שלם. קחו משפחה כמו `aⁿb` והפרידו עם `aⁿb`.</li>
+                            <li><strong>הרעיון המרכזי:</strong> בנו את המשפחה המפרידה מהחלק במילה שצריך "לזכור" (החלק הגדל באופן לא מוגבל).</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h3>⚠️ טעויות נפוצות</h3>
+                        <ul>
+                            <li><strong>בחירת סייפא לא נכונה:</strong> ודאו שהסייפא המפרידה `z` באמת עובדת <strong>לכל</strong> זוג i ≠ j, ולא רק למקרה פרטי.</li>
+                            <li><strong>בחירת משפחה סופית:</strong> השיטה עובדת רק אם אתם מראים קיום של <strong>אינסוף</strong> מחלקות.</li>
+                            <li><strong>שכחה להראות הפרדה לשני הכיוונים:</strong> חשוב להראות שמילה אחת נכנסת לשפה (`∈ L`) והשנייה נשארת בחוץ (`∉ L`).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3>🌟 מידע נוסף ומשאבים</h3>
+            <p>סיכום זה מבוסס על עקרונות שהוצגו במצגת "אוטומטים ושפות פורמליות - הרצאה 8: אפיון אלגברי של השפות הרגולריות".  המצגת מספקת הסברים מתמטיים מפורטים, הוכחות מלאות ודוגמאות נוספות שיעזרו לך להעמיק את הבנתך. זכור, תרגול הוא המפתח לשליטה בחומר!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-header');
+            if (sections.length > 0) {
+                // Open the first two sections by default
+                toggleSection(sections[0]);
+                toggleSection(sections[1]);
+            }
+        });
+
+        function toggleSection(headerElement) {
+            const content = headerElement.nextElementSibling;
+            const arrow = headerElement.querySelector('.arrow');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                arrow.classList.add('rotated');
+            }
+        }
+
+        // Progress bar based on scroll
+        const progressBar = document.getElementById('progressBar');
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+
+        window.addEventListener('scroll', () => {
+            if (totalHeight > 0) {
+                const progress = (window.scrollY / totalHeight) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+        });
+    </script>
+</body>
+</html>
