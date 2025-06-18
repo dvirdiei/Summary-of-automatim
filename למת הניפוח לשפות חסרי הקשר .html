@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיידעון: למת הנפוח לשפות חסרות הקשר</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .theorem-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid #e91e63;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .theorem-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .theorem-title {
+            font-size: 1.8em;
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .section {
+            background: white;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        .section-content {
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 15px 0;
+            direction: ltr;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #00bcd4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .proof-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .mistake-box {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ffdfba 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #c3f0ca 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .game-analogy {
+            background: linear-gradient(135deg, #ddd6fe 0%, #e0e7ff 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #8b5cf6;
+            text-align: center;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: inherit;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .home-button {
+                top: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+
+        ul, ol {
+            padding-right: 20px;
+            margin: 15px 0;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .visual-pump {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 8px;
+            direction: ltr;
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">
+        🏠 דף הבית
+    </a>
+    <div class="container">
+        <div class="header">
+            <h1>🎈 למת הנפוח לשפות חסרות הקשר</h1>
+            <p>הכלי החזק להוכחת אי-חסרת-הקשר של שפות</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="theorem-box">
+                <div class="theorem-title">🎯 למת הנפוח - ההגדרה הפורמלית</div>
+                <p>אם L היא שפה חסרת הקשר, אז קיים קבוע p (אורך הנפוח) כך שכל מילה w ∈ L באורך |w| ≥ p ניתנת לפירוק:</p>
+                <div class="formula">
+                    w = u v x y z
+                </div>
+                <p>כאשר התנאים הבאים מתקיימים:</p>
+                <ol>
+                    <li>|vxy| ≤ p (החלק האמצעי קצר)</li>
+                    <li>|vy| ≥ 1 (לפחות אחד מ-v או y לא ריק)</li>
+                    <li>∀i≥0: uv<sup>i</sup>xy<sup>i</sup>z ∈ L (הנפוח עובד)</li>
+                </ol>
+            </div>
+            <div class="game-analogy">
+                <h3>🎮 הסבר לילד בכיתה א'</h3>
+                <p><strong>חשבו על בלון!</strong> 🎈</p>
+                <p>כל שפה חסרת הקשר היא כמו בלון מיוחד. אם המילה ארוכה מספיק, אפשר לקחת חלק ממנה (כמו לתפוס את הבלון במקום מסוים) ולנפח אותה - להוסיף עוד ועוד מאותו החלק, והמילה עדיין תישאר "חוקית" בשפה.</p>
+                <p>אם לא מצליחים לנפח בדרך הזו - השפה לא חסרת הקשר!</p>
+            </div>
+
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <span>🌳 הרעיון מאחורי למת הנפוח: עץ גזירה</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="proof-box">
+                            <h4>העיקרון הבסיסי: מחזוריות בעץ הגזירה</h4>
+                            <p>למת הנפוח מבוססת על תכונה בסיסית של עצי גזירה בדקדוק חסר הקשר:</p>
+                            <ul>
+                                <li>כאשר מילה ארוכה מספיק, עץ הגזירה חייב להיות עמוק מאוד</li>
+                                <li>בעץ עמוק, חייב להיות משתנה שמופיע <strong>פעמיים</strong> באותו מסלול מהשורש לעלה</li>
+                            </ul>
+                            
+                            <div style="display: flex; justify-content: space-between; gap: 20px; margin: 20px 0; flex-wrap: wrap;">
+                                <!-- Tree with single pumping (i=1) -->
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h5 style="text-align: center; color: #e91e63; margin-bottom: 10px;">🌳 עץ גזירה עם נפוח אחד (i=1)</h5>
+                                    <svg width="350" height="350" viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg" style="background: rgba(255,255,255,0.9); border-radius: 10px; display: block;">
+                                        <!-- Level 1: S -->
+                                        <circle cx="175" cy="30" r="18" fill="#e91e63" stroke="#c2185b" stroke-width="2"/>
+                                        <text x="175" y="37" text-anchor="middle" fill="white" font-weight="bold" font-size="14">S</text>
+                                        
+                                        <!-- Level 2: u, A, z -->
+                                        <line x1="160" y1="45" x2="60" y2="85" stroke="#333" stroke-width="2"/>
+                                        <line x1="175" y1="45" x2="175" y2="85" stroke="#333" stroke-width="2"/>
+                                        <line x1="190" y1="45" x2="290" y2="85" stroke="#333" stroke-width="2"/>
+                                        
+                                        <circle cx="50" cy="95" r="15" fill="#a8edea" stroke="#00bcd4" stroke-width="2"/>
+                                        <text x="50" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="12">u</text>
+                                        
+                                        <circle cx="175" cy="95" r="18" fill="#667eea" stroke="#5a6fd8" stroke-width="3"/>
+                                        <text x="175" y="102" text-anchor="middle" fill="white" font-weight="bold" font-size="14">A</text>
+                                        
+                                        <circle cx="300" cy="95" r="15" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="2"/>
+                                        <text x="300" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="12">z</text>
+                                        
+                                        <!-- Level 3: A produces v, A, y (single pump) -->
+                                        <line x1="160" y1="110" x2="130" y2="145" stroke="#e74c3c" stroke-width="2"/>
+                                        <line x1="175" y1="113" x2="175" y2="145" stroke="#e74c3c" stroke-width="3"/>
+                                        <line x1="190" y1="110" x2="220" y2="145" stroke="#e74c3c" stroke-width="2"/>
+                                        
+                                        <circle cx="120" cy="155" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="120" y="161" text-anchor="middle" fill="white" font-weight="bold" font-size="12">v</text>
+                                        
+                                        <circle cx="175" cy="155" r="18" fill="#667eea" stroke="#5a6fd8" stroke-width="3"/>
+                                        <text x="175" y="162" text-anchor="middle" fill="white" font-weight="bold" font-size="14">A</text>
+                                        
+                                        <circle cx="230" cy="155" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="230" y="161" text-anchor="middle" fill="white" font-weight="bold" font-size="12">y</text>
+                                        
+                                        <!-- Level 4: Final A produces x -->
+                                        <line x1="175" y1="173" x2="175" y2="208" stroke="#333" stroke-width="2"/>
+                                        
+                                        <circle cx="175" cy="220" r="15" fill="#c3f0ca" stroke="#27ae60" stroke-width="2"/>
+                                        <text x="175" y="226" text-anchor="middle" fill="white" font-weight="bold" font-size="12">x</text>
+                                        
+                                        <!-- Terminal string at bottom -->
+                                        <rect x="30" y="290" width="25" height="18" fill="#a8edea" stroke="#00bcd4" stroke-width="1" rx="2"/>
+                                        <text x="42.5" y="301" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">u</text>
+                                        
+                                        <rect x="90" y="290" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="102.5" y="301" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">v</text>
+                                        
+                                        <rect x="150" y="290" width="25" height="18" fill="#c3f0ca" stroke="#27ae60" stroke-width="1" rx="2"/>
+                                        <text x="162.5" y="301" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">x</text>
+                                        
+                                        <rect x="210" y="290" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="222.5" y="301" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">y</text>
+                                        
+                                        <rect x="270" y="290" width="25" height="18" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="1" rx="2"/>
+                                        <text x="282.5" y="301" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">z</text>
+                                        
+                                        <!-- Result string -->
+                                        <text x="175" y="260" text-anchor="middle" fill="#333" font-weight="bold" font-size="14">תוצאה: uvxyz</text>
+                                        <text x="175" y="275" text-anchor="middle" fill="#666" font-size="12">(נפוח יחיד של v ו-y)</text>
+                                        
+                                        <!-- Highlight pumping cycle -->
+                                        <ellipse cx="175" cy="155" rx="65" ry="45" fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4,4"/>
+                                        <text x="250" y="145" fill="#e74c3c" font-weight="bold" font-size="11">מחזור הנפוח</text>
+                                        <text x="250" y="160" fill="#e74c3c" font-weight="bold" font-size="11">A → vAy</text>
+                                    </svg>
+                                </div>
+                                
+                                <!-- Tree with pumping (i=2) -->
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h5 style="text-align: center; color: #e91e63; margin-bottom: 10px;">🌳 עץ גזירה עם נפוח (i=2)</h5>
+                                    <svg width="350" height="380" viewBox="0 0 350 380" xmlns="http://www.w3.org/2000/svg" style="background: rgba(255,255,255,0.9); border-radius: 10px; display: block;">
+                                        <!-- Level 1: S -->
+                                        <circle cx="175" cy="30" r="18" fill="#e91e63" stroke="#c2185b" stroke-width="2"/>
+                                        <text x="175" y="37" text-anchor="middle" fill="white" font-weight="bold" font-size="14">S</text>
+                                        
+                                        <!-- Level 2: u, A, z -->
+                                        <line x1="160" y1="45" x2="60" y2="85" stroke="#333" stroke-width="2"/>
+                                        <line x1="175" y1="45" x2="175" y2="85" stroke="#333" stroke-width="2"/>
+                                        <line x1="190" y1="45" x2="290" y2="85" stroke="#333" stroke-width="2"/>
+                                        
+                                        <circle cx="50" cy="95" r="15" fill="#a8edea" stroke="#00bcd4" stroke-width="2"/>
+                                        <text x="50" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="12">u</text>
+                                        
+                                        <circle cx="175" cy="95" r="18" fill="#667eea" stroke="#5a6fd8" stroke-width="3"/>
+                                        <text x="175" y="102" text-anchor="middle" fill="white" font-weight="bold" font-size="14">A</text>
+                                        
+                                        <circle cx="300" cy="95" r="15" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="2"/>
+                                        <text x="300" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="12">z</text>
+                                        
+                                        <!-- Level 3: A produces v, A, y -->
+                                        <line x1="160" y1="110" x2="130" y2="145" stroke="#e74c3c" stroke-width="2"/>
+                                        <line x1="175" y1="113" x2="175" y2="145" stroke="#e74c3c" stroke-width="3"/>
+                                        <line x1="190" y1="110" x2="220" y2="145" stroke="#e74c3c" stroke-width="2"/>
+                                        
+                                        <circle cx="120" cy="155" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="120" y="161" text-anchor="middle" fill="white" font-weight="bold" font-size="12">v</text>
+                                        
+                                        <circle cx="175" cy="155" r="18" fill="#667eea" stroke="#5a6fd8" stroke-width="3"/>
+                                        <text x="175" y="162" text-anchor="middle" fill="white" font-weight="bold" font-size="14">A</text>
+                                        
+                                        <circle cx="230" cy="155" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="230" y="161" text-anchor="middle" fill="white" font-weight="bold" font-size="12">y</text>
+                                        
+                                        <!-- Level 4: Second A produces v, A, y again -->
+                                        <line x1="160" y1="170" x2="145" y2="205" stroke="#e74c3c" stroke-width="2"/>
+                                        <line x1="175" y1="173" x2="175" y2="205" stroke="#e74c3c" stroke-width="3"/>
+                                        <line x1="190" y1="170" x2="205" y2="205" stroke="#e74c3c" stroke-width="2"/>
+                                        
+                                        <circle cx="135" cy="215" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="135" y="221" text-anchor="middle" fill="white" font-weight="bold" font-size="12">v</text>
+                                        
+                                        <circle cx="175" cy="215" r="18" fill="#667eea" stroke="#5a6fd8" stroke-width="3"/>
+                                        <text x="175" y="222" text-anchor="middle" fill="white" font-weight="bold" font-size="14">A</text>
+                                        
+                                        <circle cx="215" cy="215" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                        <text x="215" y="221" text-anchor="middle" fill="white" font-weight="bold" font-size="12">y</text>
+                                        
+                                        <!-- Level 5: Final A produces x -->
+                                        <line x1="175" y1="233" x2="175" y2="268" stroke="#333" stroke-width="2"/>
+                                        
+                                        <circle cx="175" cy="280" r="15" fill="#c3f0ca" stroke="#27ae60" stroke-width="2"/>
+                                        <text x="175" y="286" text-anchor="middle" fill="white" font-weight="bold" font-size="12">x</text>
+                                        
+                                        <!-- Terminal string at bottom -->
+                                        <rect x="30" y="340" width="25" height="18" fill="#a8edea" stroke="#00bcd4" stroke-width="1" rx="2"/>
+                                        <text x="42.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">u</text>
+                                        
+                                        <rect x="60" y="340" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="72.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">v</text>
+                                        
+                                        <rect x="90" y="340" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="102.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">v</text>
+                                        
+                                        <rect x="120" y="340" width="25" height="18" fill="#c3f0ca" stroke="#27ae60" stroke-width="1" rx="2"/>
+                                        <text x="132.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">x</text>
+                                        
+                                        <rect x="150" y="340" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="162.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">y</text>
+                                        
+                                        <rect x="180" y="340" width="25" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                        <text x="192.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">y</text>
+                                        
+                                        <rect x="210" y="340" width="25" height="18" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="1" rx="2"/>
+                                        <text x="222.5" y="351" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">z</text>
+                                        
+                                        <!-- Result string -->
+                                        <text x="175" y="310" text-anchor="middle" fill="#333" font-weight="bold" font-size="14">תוצאה: uv²xy²z</text>
+                                        <text x="175" y="325" text-anchor="middle" fill="#666" font-size="12">(נפוח פעמיים של v ו-y)</text>
+                                        
+                                        <!-- Highlight pumping cycle -->
+                                        <ellipse cx="175" cy="185" rx="80" ry="70" fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4,4"/>
+                                        <text x="260" y="180" fill="#e74c3c" font-weight="bold" font-size="11">מחזור הנפוח</text>
+                                        <text x="260" y="195" fill="#e74c3c" font-weight="bold" font-size="11">A → vAy</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                <h4 style="text-align: center; color: #c2185b; margin-bottom: 15px;">🔄 הסבר התהליך</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
+                                    <div>
+                                        <h5 style="color: #667eea;">בעץ השמאלי (i=1):</h5>
+                                        <p>A מייצר vAy, ואז x<br>
+                                        <strong>w = uvxyz</strong> (נפוח יחיד)</p>
+                                    </div>
+                                    <div>
+                                        <h5 style="color: #667eea;">בעץ הימני (i=2):</h5>
+                                        <p>A מייצר vAy, ואז שוב vAy, ולבסוף x<br>
+                                        <strong>w = uv²xy²z</strong> (נפוח כפול)</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px;">
+                                    <strong style="color: #e91e63;">המפתח:</strong> 
+                                    <span style="color: #333;">כאשר משתנה A מופיע פעמיים באותו מסלול, הוא יוצר מחזור שאפשר לחזור עליו כמה פעמים שרוצים!</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        
+                    </div>
+                </div>
+                
+                
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🎮 מי בוחר מה? - חוקי המשחק של למת הנפוח</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="tip-box" style="border-right-color: #3182ce; background: #ebf8ff;">
+                        <strong>זהו המפתח להבנת למת הנפוח!</strong> צריך לדעת מי שולט בכל פרמטר במשחק.
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                        <div class="proof-box" style="border-right-color: #38a169; background: #f0fff4;">
+                            <h3 style="color: #38a169; text-align: center;">🟢 הוכחת קיום הלמה</h3>
+                            <p style="font-weight: bold; text-align: center;">(כאשר השפה חסרת הקשר)</p>
+                            <ul style="list-style: none; padding: 0;">
+                                <li>✅ <strong>p (קבוע הנפוח):</strong> <span style="color: #38a169;">אנחנו בוחרים</span></li>
+                                <li>❌ <strong>w (המילה):</strong> <span style="color: #e53e3e;">לא לבחירה - חייב לעבוד לכל w</span></li>
+                                <li>✅ <strong>הפירוק uvxyz:</strong> <span style="color: #38a169;">אנחנו בוחרים</span></li>
+                                <li>❌ <strong>i (כמות הנפוח):</strong> <span style="color: #e53e3e;">לא לבחירה - חייב לעבוד לכל i</span></li>
+                            </ul>
+                        </div>
+                        <div class="mistake-box" style="border-right-color: #e53e3e; background: #fff5f5;">
+                            <h3 style="color: #e53e3e; text-align: center;">🔴 הפרכת הלמה</h3>
+                            <p style="font-weight: bold; text-align: center;">(כאשר רוצים להוכיח שהשפה אינה חסרת הקשר)</p>
+                            <ul style="list-style: none; padding: 0;">
+                                <li>❌ <strong>p (קבוע הנפוח):</strong> <span style="color: #e53e3e;">לא לבחירה - חייב לעבוד לכל p</span></li>
+                                <li>✅ <strong>w (המילה):</strong> <span style="color: #38a169;">אנחנו בוחרים - מספיק מילה אחת</span></li>
+                                <li>❌ <strong>הפירוק uvxyz:</strong> <span style="color: #e53e3e;">לא לבחירה - חייב לא לעבוד לכל פירוק</span></li>
+                                <li>✅ <strong>i (כמות הנפוח):</strong> <span style="color: #38a169;">אנחנו בוחרים - מספיק i אחד</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="game-analogy">
+                        <h3>🎯 הסבר המשחק במילים פשוטות</h3>
+                        <div style="text-align: right; margin: 20px 0;">
+                            <h4 style="color: #e91e63;">🔥 במצב הפרכה (מה שאנחנו עושים בדרך כלל):</h4>
+                            <div style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 8px; margin: 10px 0;">
+                                <p><strong>השלבים:</strong></p>
+                                <ol>
+                                    <li><strong>יריב נותן לנו p</strong> - אנחנו לא יודעים כמה, רק שהוא קיים</li>
+                                    <li><strong>אנחנו בוחרים מילה w חכמה</strong> - כזו שתחשוף את הבעיה (לדוגמה: a<sup>p</sup>b<sup>p</sup>c<sup>p</sup>)</li>
+                                    <li><strong>יריב מפרק את w = uvxyz</strong> - אנחנו לא יודעים איך, אבל יודעים שמקיים את התנאים</li>
+                                    <li><strong>אנחנו בוחרים i</strong> - כזה שיפריך (בדרך כלל i=0 או i=2)</li>
+                                    <li><strong>אנחנו מוכיחים</strong> שuv<sup>i</sup>xy<sup>i</sup>z לא בשפה!</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔍 איך מוכחים שפה לא חסרת הקשר?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <h3>השלבים להוכחת שפה לא חסרת הקשר:</h3>
+                    <ol>
+                        <li><strong>הנחה בדרך השלילה:</strong> נניח שהשפה L חסרת הקשר</li>
+                        <li><strong>קיום p:</strong> אז קיים p (אורך הנפוח) מלמת הנפוח</li> 
+                        <li><strong>בחירת מילה:</strong> נבחר מילה w ∈ L עם |w| ≥ p (בחכמה!)</li>
+                        <li><strong>פירוק כללי:</strong> לכל פירוק w = uvxyz המקיים את התנאים הראשונים</li>
+                        <li><strong>מציאת סתירה:</strong> נמצא i כך ש-uv<sup>i</sup>xy<sup>i</sup>z ∉ L</li>
+                        <li><strong>מסקנה:</strong> סתירה! השפה לא חסרת הקשר</li>
+                    </ol>
+                    
+                    <div class="tip-box">
+                        <strong>💡 טיפ חשוב:</strong>
+                        <p>המפתח הוא <strong>בחירת המילה החכמה</strong>! בדרך כלל נבחר מילה עם פרמטר n גדול, למשל w = a<sup>n</sup>b<sup>n</sup>c<sup>n</sup> עם n ≥ p.</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📖 דוגמאות קלאסיות להוכחות</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="example-box">
+                        <h4>דוגמה 1: L = {a<sup>n</sup>b<sup>n</sup>c<sup>n</sup> | n ≥ 1}</h4>
+                        <p><strong>מילה נבחרת:</strong> w = a<sup>p</sup>b<sup>p</sup>c<sup>p</sup> (אורך 3p)</p>
+                        
+                        <p><strong>ניתוח מקרים לפירוק vxy:</strong></p>
+                        <ul>
+                            <li><strong>מקרה 1:</strong> vxy מכיל רק a's ו-b's → נפוח יוסיף רק a's ו-b's → לא יהיו מספיקים c's</li>
+                            <li><strong>מקרה 2:</strong> vxy מכיל רק b's ו-c's → נפוח יוסיף רק b's ו-c's → לא יהיו מספיקים a's</li>
+                            <li><strong>מקרה 3:</strong> vxy מכיל a's ו-c's (דילוג על b's) → נפוח יהרוס את הסדר!</li>
+                        </ul>
+                        
+                        <div class="visual-pump">
+                            w = aaaaabbbbccccc<br>
+                            <span style="color: red;">↑_____↑</span> אי אפשר לנפח ולשמור על היחס!
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>דוגמה 2: L = {ww | w ∈ {a,b}*}</h4>
+                        <p><strong>מילה נבחרת:</strong> w = a<sup>p</sup>b<sup>p</sup>a<sup>p</sup>b<sup>p</sup></p>
+                        <p><strong>הרעיון:</strong> כל נפוח יהרוס את הסימטריה - המחצית הראשונה לא תהיה זהה לשנייה.</p>
+                        <p><strong>הסתירה:</strong> אם v או y נמצאים במחצית אחת, הנפוח יעשה אותה ארוכה יותר מהשנייה.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>דוגמה 3: L = {a<sup>i</sup>b<sup>j</sup>c<sup>k</sup> | 0 ≤ i ≤ j ≤ k}</h4>
+                        <p><strong>מילה נבחרת:</strong> w = a<sup>p</sup>b<sup>p</sup>c<sup>p</sup></p>
+                        <p><strong>הבעיה:</strong> הנפוח יכול להוסיף יותר c's מ-b's או יותר b's מ-a's, והיחס i ≤ j ≤ k יישבר.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>⚠️ טעויות נפוצות</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="mistake-box">
+                        <h4>❌ טעות 1: בחירת מילה קצרה מדי</h4>
+                        <p><strong>הטעות:</strong> לבחור מילה w עם |w| < p</p>
+                        <p><strong>למה זה לא עובד:</strong> למת הנפוח רק מבטיח שמילים ארוכות ניתנות לנפוח.</p>
+                        <p><strong>הפתרון:</strong> תמיד בחרו מילה עם |w| ≥ p, בדרך כלל w שתלויה ב-p.</p>
+                    </div>
+
+                    <div class="mistake-box">
+                        <h4>❌ טעות 2: הצגת פירוק ספציפי במקום הכללי</h4>
+                        <p><strong>הטעות:</strong> "נבחר v = a ו-y = b..."</p>
+                        <p><strong>למה זה לא עובד:</strong> אתם צריכים להוכיח שאין אף פירוק שעובד!</p>
+                        <p><strong>הפתרון:</strong> נתחו את כל המקרים האפשריים לפירוק vxy.</p>
+                    </div>
+
+                    <div class="mistake-box">
+                        <h4>❌ טעות 3: שכחת התנאי |vxy| ≤ p</h4>
+                        <p><strong>הטעות:</strong> לא להשתמש בהגבלה שvxy קצר</p>
+                        <p><strong>למה זה חשוב:</strong> ההגבלה הזו מצמצמת את האפשרויות ומסייעת בהוכחה.</p>
+                        <p><strong>הפתרון:</strong> תמיד קחו בחשבון היכן יכול להיות vxy בהתבסס על האורך שלו.</p>
+                    </div>
+
+                    <div class="mistake-box">
+                        <h4>❌ טעות 4: בדיקת i = 0 בלבד</h4>
+                        <p><strong>הטעות:</strong> להראות רק שuv<sup>0</sup>xy<sup>0</sup>z = uxz לא בשפה</p>
+                        <p><strong>למה זה לא מספיק:</strong> צריך למצוא i כלשהו שלא עובד.</p>
+                        <p><strong>הפתרון:</strong> נסו i = 0, i = 2 או אפילו i גדול יותר.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>💡טיפים וטכניקות חכמות</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                <div class="tip-box">
+                    <h4>🎯 טיפ 0: טכניקת החיתוך עם שפה רגולרית</h4>
+                    <p>
+                        <strong>עקרון חשוב:</strong> לפעמים שפה עוברת את למת הנפוח (כלומר, אי אפשר להפריך אותה ישירות), אבל היא עדיין לא חסרת הקשר! במקרים כאלה, אפשר "לבודד" חלק בעייתי בעזרת חיתוך עם שפה רגולרית פשוטה, ואז להפעיל את הלמה על התוצאה.
+                    </p>
+                    
+                    <div style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 8px; margin: 15px 0; border-right: 4px solid #8b5cf6;">
+                        <h5 style="color: #8b5cf6; margin-bottom: 10px;">🔍 איך זה עובד?</h5>
+                        <ol>
+                            <li>בוחרים שפה רגולרית R שמבודדת את החלק המעניין ב-L</li>
+                            <li>מחשבים את L ∩ R (החיתוך של L עם R)</li>
+                            <li>מוכיחים ש-L ∩ R אינה חסרת הקשר (באמצעות למת הנפוח)</li>
+                            <li>מאחר ששפות חסרות הקשר סגורות לחיתוך עם רגולריות, נובע שגם L לא חסרת הקשר!</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-box" style="border-right-color: #8b5cf6; background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);">
+                        <h5>📝 דוגמה: L = {a<sup>i</sup>b<sup>j</sup>c<sup>k</sup> | i ≠ j או j ≠ k}</h5>
+                        <p><strong>חיתוך עם:</strong> R = a<sup>+</sup>b<sup>+</sup>c<sup>+</sup> (כל המילים עם לפחות אות אחת מכל סוג ברצף)</p>
+                        <p><strong>נקבל:</strong> L ∩ R = כל המילים מהצורה a<sup>i</sup>b<sup>j</sup>c<sup>k</sup> עם i, j, k ≥ 1 ו־(i ≠ j או j ≠ k)</p>
+                        <p><strong>כלומר:</strong> כל המילים a<sup>i</sup>b<sup>j</sup>c<sup>k</sup> חוץ מאלה שבהן i = j = k (שזה בדיוק a<sup>n</sup>b<sup>n</sup>c<sup>n</sup>)</p>
+                        
+                        <div style="background: rgba(220, 38, 127, 0.1); padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <p><strong>🔥 הוכחת אי־CFL:</strong></p>
+                            <ol>
+                                <li>נניח בשלילה ש-L ∩ R חסרת הקשר.</li>
+                                <li>לפי למת הנפוח, כל מילה מספיק ארוכה ב-L ∩ R ניתנת לפמפום.</li>
+                                <li>נבחר w = a<sup>p+1</sup>b<sup>p</sup>c<sup>p</sup> ∈ L ∩ R (כי i ≠ j).</li>
+                                <li>כל פירוק w = uvxyz שמקיים את תנאי הלמה, ננסה לנפח עם i=0 או i=2.</li>
+                                <li>בפמפום מסוים, ייתכן שנקבל מילה שבה מספר ה-a, b, c משתווה (כלומר, חוזרים ל-a<sup>n</sup>b<sup>n</sup>c<sup>n</sup>), שהיא לא בשפה!</li>
+                                <li>קיבלנו סתירה ללמה → L ∩ R לא חסרת הקשר → גם L לא חסרת הקשר.</li>
+                            </ol>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h5 style="color: #8b5cf6; text-align: center;">🌳 המחשה: עץ גזירה של w = a<sup>p+1</sup>b<sup>p</sup>c<sup>p</sup></h5>
+                            <svg width="340" height="220" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" style="background: rgba(255,255,255,0.9); border-radius: 10px; display: block; margin: 0 auto;">
+                                <!-- S -->
+                                <circle cx="170" cy="30" r="18" fill="#e91e63" stroke="#c2185b" stroke-width="2"/>
+                                <text x="170" y="37" text-anchor="middle" fill="white" font-weight="bold" font-size="14">S</text>
+                                <!-- S -> ABC -->
+                                <line x1="170" y1="48" x2="90" y2="90" stroke="#333" stroke-width="2"/>
+                                <line x1="170" y1="48" x2="170" y2="90" stroke="#333" stroke-width="2"/>
+                                <line x1="170" y1="48" x2="250" y2="90" stroke="#333" stroke-width="2"/>
+                                <!-- A, B, C -->
+                                <circle cx="90" cy="100" r="15" fill="#a8edea" stroke="#00bcd4" stroke-width="2"/>
+                                <text x="90" y="106" text-anchor="middle" fill="white" font-weight="bold" font-size="12">A</text>
+                                <circle cx="170" cy="100" r="15" fill="#ffb3ba" stroke="#e74c3c" stroke-width="2"/>
+                                <text x="170" y="106" text-anchor="middle" fill="white" font-weight="bold" font-size="12">B</text>
+                                <circle cx="250" cy="100" r="15" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="2"/>
+                                <text x="250" y="106" text-anchor="middle" fill="white" font-weight="bold" font-size="12">C</text>
+                                <!-- A -> a... -->
+                                <line x1="90" y1="115" x2="90" y2="150" stroke="#00bcd4" stroke-width="2"/>
+                                <rect x="75" y="150" width="30" height="18" fill="#a8edea" stroke="#00bcd4" stroke-width="1" rx="2"/>
+                                <text x="90" y="163" text-anchor="middle" fill="#333" font-weight="bold" font-size="12">a<sup>p+1</sup></text>
+                                <!-- B -> b... -->
+                                <line x1="170" y1="115" x2="170" y2="150" stroke="#e74c3c" stroke-width="2"/>
+                                <rect x="155" y="150" width="30" height="18" fill="#ffb3ba" stroke="#e74c3c" stroke-width="1" rx="2"/>
+                                <text x="170" y="163" text-anchor="middle" fill="#333" font-weight="bold" font-size="12">b<sup>p</sup></text>
+                                <!-- C -> c... -->
+                                <line x1="250" y1="115" x2="250" y2="150" stroke="#8b5cf6" stroke-width="2"/>
+                                <rect x="235" y="150" width="30" height="18" fill="#ddd6fe" stroke="#8b5cf6" stroke-width="1" rx="2"/>
+                                <text x="250" y="163" text-anchor="middle" fill="#333" font-weight="bold" font-size="12">c<sup>p</sup></text>
+                                <!-- Result string -->
+                                <text x="170" y="200" text-anchor="middle" fill="#333" font-weight="bold" font-size="14">w = a<sup>p+1</sup>b<sup>p</sup>c<sup>p</sup></text>
+                            </svg>
+                            <div style="text-align: center; margin-top: 8px; color: #666;">
+                                <span>הפמפום על a's או b's או c's עלול להחזיר אותנו למילה a<sup>n</sup>b<sup>n</sup>c<sup>n</sup> שאינה בשפה!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                    <div class="tip-box">
+                        <h4>🎯 טיפ 1: זיהוי דפוסים קלאסיים</h4>
+                        <ul>
+                            <li><strong>שפות "איזון משולש":</strong> a<sup>n</sup>b<sup>n</sup>c<sup>n</sup>, a<sup>n</sup>b<sup>2n</sup>c<sup>3n</sup> - בדרך כלל לא חסרות הקשר</li>
+                            <li><strong>שפות "העתקה":</strong> ww, www - בדרך כלל לא חסרות הקשר</li>
+                            <li><strong>שפות "אריתמטיקה":</strong> a<sup>n²</sup>, a<sup>2^n</sup> - בדרך כלל לא חסרות הקשר</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>🎯 טיפ 2: בחירת מילים חכמות</h4>
+                        <ul>
+                            <li><strong>למילים עם כמה פרמטרים:</strong> בחרו פרמטרים שווים (n = p)</li>
+                            <li><strong>לשפות מורכבות:</strong> בחרו מילה שמדגישה את הבעיה הבסיסית</li>
+                            <li><strong>השתמשו בסימטריה:</strong> מילים סימטריות חושפות את הבעיות בנפוח</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>🎯 טיפ 3: ניתוח מקרים שיטתי</h4>
+                        <p>תמיד התחילו בניתוח איפה יכול להיות החלק vxy:</p>
+                        <ol>
+                            <li>בתחילת המילה</li>
+                            <li>באמצע המילה</li>
+                            <li>בסוף המילה</li>
+                            <li>חוצה את הגבולות בין החלקים</li>
+                        </ol>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>🎯 טיפ 4: בדיקת ערכי i שונים</h4>
+                        <ul>
+                            <li><strong>i = 0:</strong> מחיקת v ו-y (שימושי לשפות עם איזון)</li>
+                            <li><strong>i = 2:</strong> הכפלת v ו-y (שימושי לרוב המקרים)</li>
+                            <li><strong>i גדול:</strong> לפעמים צריך להגזים בנפוח</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🧪 מתי שפה כן חסרת הקשר?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>זכרו:</strong> למת הנפוח יכול רק להוכיח שפה <strong>לא</strong> חסרת הקשר. אם שפה עוברת את המבחן, היא עדיין יכולה להיות לא חסרת הקשר!</p>
+                    
+                    <div class="example-box">
+                        <h4>✅ שפות שהן חסרות הקשר:</h4>
+                        <ul>
+                            <li><strong>L₁ = {a<sup>n</sup>b<sup>n</sup> | n ≥ 0}</strong> - איזון פשוט</li>
+                            <li><strong>L₂ = {w | w = w<sup>R</sup>}</strong> - פלינדרומים</li>
+                            <li><strong>L₃ = {a<sup>n</sup>b<sup>m</sup> | n ≠ m}</strong> - אי-איזון</li>
+                            <li><strong>L₄ = {a<sup>i</sup>b<sup>j</sup>c<sup>k</sup> | i = j או j = k}</strong> - איזון חלקי</li>
+                        </ul>
+                    </div>
+
+                    <div class="proof-box">
+                        <h4>🔬 איך מוכחים שפה כן חסרת הקשר?</h4>
+                        <ol>
+                            <li><strong>בניית CFG:</strong> צרו דקדוק חסר הקשר שמייצר את השפה</li>
+                            <li><strong>בניית PDA:</strong> צרו אוטומט מחסנית שמזהה את השפה</li> 
+                            <li><strong>פעולות סגורות:</strong> השתמשו בעובדה שחיתוך, חיבור ושרשור שפות CFל נותנים CFL</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        
+        <div class="footer">
+            <h3>🌟 סיכום</h3>
+            <p>למת הנפוח לשפות חסרות הקשר היא אחד הכלים החזקים ביותר בתורת השפות הפורמליות.<br>
+            היא מאפשרת לנו להוכיח שפשות מורכבות אינן חסרות הקשר, ובכך לקבוע את הגבולות של מחלקת השפות הזו.<br>
+            <strong>זכרו:</strong> התרגול הוא המפתח - ככל שתתרגלו יותר, כך תזהו מהר יותר את הדפוסים והטכניקות הנכונות!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-header');
+            if (sections.length > 0) {
+                // Open the first two sections by default
+                toggleSection(sections[0]);
+                toggleSection(sections[1]);
+            }
+        });
+
+        function toggleSection(headerElement) {
+            const content = headerElement.nextElementSibling;
+            const arrow = headerElement.querySelector('.arrow');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                arrow.classList.add('rotated');
+            }
+        }
+
+        // Progress bar based on scroll
+        const progressBar = document.getElementById('progressBar');
+        const container = document.querySelector('.container');
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = container.scrollHeight;
+            const winHeight = window.innerHeight;
+            const scrollPercent = (scrollTop) / (docHeight - winHeight);
+            const scrollPercentRounded = Math.round(scrollPercent * 100);
+            
+            if(progressBar) {
+                progressBar.style.width = `${Math.min(scrollPercentRounded, 100)}%`;
+            }
+        });
+
+        // Add some interactive animations
+        document.querySelectorAll('.theorem-box, .example-box, .proof-box, .mistake-box, .tip-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                box.style.transform = 'translateY(-5px) scale(1.02)';
+                box.style.transition = 'all 0.3s ease';
+            });
+            
+            box.addEventListener('mouseleave', () => {
+                box.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
